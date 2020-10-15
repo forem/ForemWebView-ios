@@ -1,6 +1,6 @@
 //
 //  ForemMediaManager.swift
-//  ForemWebView
+//  ForemWebView-ios
 //
 //  Created by Fernando Valverde on 9/28/20.
 //

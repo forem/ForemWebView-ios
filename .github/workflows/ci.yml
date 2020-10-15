@@ -1,0 +1,18 @@
+on: pull_request
+name: CI
+jobs:
+  test:
+    name: Test
+    runs-on: macOS-latest
+    strategy:
+        matrix:
+          destination: ['platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build and test
+        run: |
+          xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination "${destination}" test
+        env:
+         DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
+         destination: ${{ matrix.destination }}
