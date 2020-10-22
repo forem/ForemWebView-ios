@@ -18,8 +18,8 @@ public struct ForemUserData: Codable {
         case userID = "id"
         case configBodyClass = "config_body_class"
     }
-    var userID: Int
-    var configBodyClass: String
+    public var userID: Int
+    public var configBodyClass: String
 }
 
 open class ForemWebView: WKWebView {
