@@ -13,7 +13,7 @@ public protocol ForemWebViewDelegate: class {
     func willStartNativeVideo(playerController: AVPlayerViewController)
 }
 
-public struct UserData: Codable {
+public struct ForemUserData: Codable {
     enum CodingKeys: String, CodingKey {
         case userID = "id"
         case configBodyClass = "config_body_class"
@@ -85,7 +85,7 @@ open class ForemWebView: WKWebView {
         }
     }
 
-    open func fetchUserData(completion: @escaping (UserData?) -> Void) {
+    open func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
         let javascript = "document.getElementsByTagName('body')[0].getAttribute('data-user')"
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard error == nil, let jsonString = result as? String else {
@@ -95,7 +95,7 @@ open class ForemWebView: WKWebView {
             }
 
             do {
-                let user = try JSONDecoder().decode(UserData.self, from: Data(jsonString.utf8))
+                let user = try JSONDecoder().decode(ForemUserData.self, from: Data(jsonString.utf8))
                 completion(user)
             } catch {
                 print("Error info: \(error)")
@@ -155,7 +155,7 @@ open class ForemWebView: WKWebView {
         return "try { \(javascript) } catch (err) { console.log(err) }"
     }
     
-    private func setShellShadow(_ useShadow: Bool) {
+    open func setShellShadow(_ useShadow: Bool) {
         if useShadow {
             layer.shadowColor = UIColor.gray.cgColor
             layer.shadowOffset = CGSize(width: 0.0, height: 0.9)
