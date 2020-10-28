@@ -1,10 +1,3 @@
-//
-//  ForemMediaManager.swift
-//  ForemWebView-ios
-//
-//  Created by Fernando Valverde on 9/28/20.
-//
-
 import UIKit
 import AVKit
 import MediaPlayer

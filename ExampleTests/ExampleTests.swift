@@ -1,10 +1,3 @@
-//
-//  ExampleTests.swift
-//  ExampleTests
-//
-//  Created by Fernando Valverde on 9/28/20.
-//
-
 import XCTest
 import WebKit
 @testable import Example

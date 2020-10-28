@@ -1,10 +1,3 @@
-//
-//  ForemWebView.h
-//  ForemWebView
-//
-//  Created by Fernando Valverde on 9/28/20.
-//
-
 #import <Foundation/Foundation.h>
 
 //! Project version number for ForemWebView.

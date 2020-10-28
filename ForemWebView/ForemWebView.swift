@@ -1,10 +1,3 @@
-//
-//  ForemWebView.swift
-//  ForemWebView-ios
-//
-//  Created by Fernando Valverde on 9/28/20.
-//
-
 import UIKit
 import WebKit
 import AVKit
@@ -15,8 +8,9 @@ public protocol ForemWebViewDelegate: class {
 
 open class ForemWebView: WKWebView {
 
-    var foremWebViewDelegate: ForemWebViewDelegate?
     var videoPlayerLayer: AVPlayerLayer?
+    
+    open var foremWebViewDelegate: ForemWebViewDelegate?
     open var baseHost: String?
     
     lazy var mediaManager: ForemMediaManager = {
@@ -25,21 +19,32 @@ open class ForemWebView: WKWebView {
     
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
+        setupWebView()
     }
     
     override init(frame: CGRect, configuration: WKWebViewConfiguration) {
         super.init(frame: frame, configuration: configuration)
+        setupWebView()
     }
 
-    open func setup(navigationDelegate: WKNavigationDelegate, foremWebViewDelegate: ForemWebViewDelegate) {
+    // MARK: - Interface functions (open)
+    
+    open func setupWebView() {
+        // This approach maintains a UserAgent format that most servers & third party services will see us
+        // as non-malicious. Example: reCaptcha may take into account a "familiarly formatted" as more
+        // trustworthy compared to bots thay may use more plain strings like "Forem"/"DEV"/etc
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
         evaluateJavaScript("navigator.userAgent") { (result, error) in
+            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+            let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
             if let result = result {
-                let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-                self.customUserAgent = "\(result) ForemWebView/\(version ?? "0.0")"
+                self.customUserAgent = "\(result) \(frameworkIdentifier)"
+            } else {
+                print("Error: \(String(describing: error?.localizedDescription))")
+                print("Unable to extend the base UserAgent. Will default to '\(frameworkIdentifier)'")
+                self.customUserAgent = frameworkIdentifier
             }
         }
-        self.navigationDelegate = navigationDelegate
-        self.foremWebViewDelegate = foremWebViewDelegate
 
         configuration.userContentController.add(self, name: "haptic")
         configuration.userContentController.add(self, name: "podcast")
@@ -119,34 +124,22 @@ open class ForemWebView: WKWebView {
         }
 
         var javascript = ""
+        // Supported messages
         if type == "podcast" {
             javascript = "document.getElementById('audiocontent').setAttribute('data-podcast', '\(jsonString)')"
         } else if type == "video" {
             javascript = "document.getElementById('video-player-source').setAttribute('data-message', '\(jsonString)')"
         }
+        
+        guard javascript.count > 0 else { return }
         evaluateJavaScript(wrappedJS(javascript)) { _, error in
             if let error = error {
                 print("Error sending Podcast message (\(message)): \(error.localizedDescription)")
             }
         }
     }
-
-    open func shouldUseShellShadow(completion: @escaping (Bool) -> Void) {
-        let javascript = "document.getElementById('page-content').getAttribute('data-current-page')"
-        evaluateJavaScript(wrappedJS(javascript)) { result, error in
-            guard error == nil, let result = result as? String else {
-                print("Error getting 'page-content' - 'data-current-page': \(String(describing: error))")
-                completion(true)
-                return
-            }
-
-            if result == "stories-show" {
-                completion(true)
-            } else {
-                completion(false)
-            }
-        }
-    }
+    
+    // MARK: - Non-open functions
     
     func closePodcastUI() {
         let javascript = "document.getElementById('closebutt').click()"
@@ -160,17 +153,6 @@ open class ForemWebView: WKWebView {
     
     private func wrappedJS(_ javascript: String) -> String {
         return "try { \(javascript) } catch (err) { console.log(err) }"
-    }
-    
-    open func setShellShadow(_ useShadow: Bool) {
-        if useShadow {
-            layer.shadowColor = UIColor.gray.cgColor
-            layer.shadowOffset = CGSize(width: 0.0, height: 0.9)
-            layer.shadowOpacity = 0.5
-            layer.shadowRadius = 0.0
-        } else {
-            layer.shadowOpacity = 0.0
-        }
     }
 }
 

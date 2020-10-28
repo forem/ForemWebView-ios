@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  Example
-//
-//  Created by Fernando Valverde on 9/28/20.
-//
-
 import UIKit
 import AVKit
 import WebKit
@@ -16,7 +9,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        webView.setup(navigationDelegate: self, foremWebViewDelegate: self)
+        webView.navigationDelegate = self
+        webView.foremWebViewDelegate = self
         webView.load("https://dev.to")
     }
 }

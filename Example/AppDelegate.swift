@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  Example
-//
-//  Created by Fernando Valverde on 9/28/20.
-//
-
 import UIKit
 import AVKit
 

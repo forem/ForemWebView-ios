@@ -1,10 +1,3 @@
-//
-//  ForemUserData.swift
-//  ForemWebView
-//
-//  Created by Fernando Valverde on 10/28/20.
-//
-
 import Foundation
 
 public struct ForemUserData: Codable {

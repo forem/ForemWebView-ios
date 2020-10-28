@@ -1,10 +1,3 @@
-//
-//  ForemWebView+WKScriptMessageHandler.swift
-//  ForemWebView-ios
-//
-//  Created by Fernando Valverde on 9/28/20.
-//
-
 import WebKit
 
 extension ForemWebView: WKScriptMessageHandler {
