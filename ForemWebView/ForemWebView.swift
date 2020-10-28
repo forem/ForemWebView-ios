@@ -56,6 +56,8 @@ open class ForemWebView: WKWebView {
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)
             load(request)
+            
+            // Set the baseHost on the first `load`
             if baseHost == nil {
                 baseHost = url.host
             }
@@ -63,9 +65,19 @@ open class ForemWebView: WKWebView {
     }
     
     open func isOAuthUrl(_ url: URL) -> Bool {
-        return url.absoluteString.hasPrefix("https://github.com/login") || url.absoluteString.hasPrefix("https://api.twitter.com/oauth") ||
-            url.absoluteString.hasPrefix("https://www.facebook.com/login.php") ||
-            url.absoluteString.hasPrefix("https://www.facebook.com/v4.0/dialog/oauth")
+        // Takes into account GitHub OAuth paths including 2FA + error pages
+        let gitHubAuth = url.absoluteString.hasPrefix("https://github.com/login") ||
+                         url.absoluteString.hasPrefix("https://github.com/session")
+        
+        // Takes into account Twitter OAuth paths including error pages
+        let twitterAuth = url.absoluteString.hasPrefix("https://api.twitter.com/oauth") ||
+                          url.absoluteString.hasPrefix("https://twitter.com/login/error")
+        
+        // Regex that into account Facebook OAuth based on their API versions
+        // Example: "https://www.facebook.com/v4.0/dialog/oauth"
+        let fbRegex =  #"https://www\.facebook\.com/v\d+.\d+/dialog/oauth"#
+        
+        return gitHubAuth || twitterAuth || url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil
     }
 
     open func fetchUserStatus(completion: @escaping (String?) -> Void) {
