@@ -13,15 +13,6 @@ public protocol ForemWebViewDelegate: class {
     func willStartNativeVideo(playerController: AVPlayerViewController)
 }
 
-public struct ForemUserData: Codable {
-    enum CodingKeys: String, CodingKey {
-        case userID = "id"
-        case configBodyClass = "config_body_class"
-    }
-    public var userID: Int
-    public var configBodyClass: String
-}
-
 open class ForemWebView: WKWebView {
 
     var foremWebViewDelegate: ForemWebViewDelegate?
@@ -34,7 +25,6 @@ open class ForemWebView: WKWebView {
     
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupConfigurationIfInvertedColorsEnabled()
     }
     
     override init(frame: CGRect, configuration: WKWebViewConfiguration) {
@@ -42,7 +32,12 @@ open class ForemWebView: WKWebView {
     }
 
     open func setup(navigationDelegate: WKNavigationDelegate, foremWebViewDelegate: ForemWebViewDelegate) {
-        customUserAgent = "forem-native-ios"
+        evaluateJavaScript("navigator.userAgent") { (result, error) in
+            if let result = result {
+                let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+                self.customUserAgent = "\(result) ForemWebView/\(version ?? "0.0")"
+            }
+        }
         self.navigationDelegate = navigationDelegate
         self.foremWebViewDelegate = foremWebViewDelegate
 
@@ -164,29 +159,6 @@ open class ForemWebView: WKWebView {
         } else {
             layer.shadowOpacity = 0.0
         }
-    }
-
-    private func setupConfigurationIfInvertedColorsEnabled() {
-        guard let path = Bundle.main.path(forResource: "invertedImages", ofType: "css"),
-            let cssString = try? String(contentsOfFile: path).components(separatedBy: .newlines).joined(),
-            !UIAccessibility.isInvertColorsEnabled else {
-            return
-        }
-
-        let source = """
-            var style = document.createElement('style');
-            style.innerHTML = '\(cssString)';
-            document.head.appendChild(style);
-            """
-
-        let userScript = WKUserScript(source: source,
-                                      injectionTime: .atDocumentEnd,
-                                      forMainFrameOnly: true)
-
-        let userContentController = WKUserContentController()
-        userContentController.addUserScript(userScript)
-        configuration.userContentController = userContentController
-        accessibilityIgnoresInvertColors = true
     }
 }
 

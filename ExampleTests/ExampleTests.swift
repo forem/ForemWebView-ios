@@ -18,7 +18,6 @@ class ExampleTests: XCTestCase {
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         viewController = mainStoryboard.instantiateInitialViewController() as? ViewController
         viewController?.webView?.load("forem.dev.html")
-        try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
@@ -27,7 +26,13 @@ class ExampleTests: XCTestCase {
 
     func testCustomUserAgent() throws {
         _ = viewController.view
-        XCTAssertEqual(viewController?.webView?.customUserAgent, "forem-native-ios")
+        let promise = expectation(description: "Custom UserAgent")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            let userAgentCheck = self.viewController?.webView?.customUserAgent?.contains("ForemWebView")
+            XCTAssertTrue(userAgentCheck ?? false, "The UserAgent contains 'ForemWebView' for metrics")
+            promise.fulfill()
+        }
+        wait(for: [promise], timeout: 5)
     }
     
     func testDetectsUserStatus() throws {

@@ -22,6 +22,8 @@
 		DC3DAE8325229E18004DAC13 /* ForemWebView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC3DAE3425229D8C004DAC13 /* ForemWebView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC3DAE9625229FD2004DAC13 /* forem.dev.html in Resources */ = {isa = PBXBuildFile; fileRef = DC3DAE9425229FD2004DAC13 /* forem.dev.html */; };
 		DC3DAE9725229FD2004DAC13 /* forem.dev-logged-in.html in Resources */ = {isa = PBXBuildFile; fileRef = DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */; };
+		DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */; };
+		DC9EF3612549FDD5003A1BE7 /* invertedImages.css in Resources */ = {isa = PBXBuildFile; fileRef = DC9EF3602549FDD5003A1BE7 /* invertedImages.css */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		DC3DAE6825229E0B004DAC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC3DAE9425229FD2004DAC13 /* forem.dev.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = forem.dev.html; sourceTree = "<group>"; };
 		DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in.html"; sourceTree = "<group>"; };
+		DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemUserData.swift; sourceTree = "<group>"; };
+		DC9EF3602549FDD5003A1BE7 /* invertedImages.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = invertedImages.css; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +135,8 @@
 				DC3DAE4025229DA5004DAC13 /* ForemWebView.swift */,
 				DC3DAE4325229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift */,
 				DC3DAE4625229DD7004DAC13 /* ForemMediaManager.swift */,
+				DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */,
+				DC9EF3602549FDD5003A1BE7 /* invertedImages.css */,
 				DC3DAE3825229D8C004DAC13 /* Info.plist */,
 			);
 			path = ForemWebView;
@@ -284,6 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC9EF3612549FDD5003A1BE7 /* invertedImages.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +320,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */,
 				DC3DAE4125229DA5004DAC13 /* ForemWebView.swift in Sources */,
 				DC3DAE4425229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift in Sources */,
 				DC3DAE4725229DD7004DAC13 /* ForemMediaManager.swift in Sources */,
