@@ -20,7 +20,8 @@ class ExampleTests: XCTestCase {
     func testCustomUserAgent() throws {
         _ = viewController.view
         let promise = expectation(description: "Custom UserAgent")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             let userAgentCheck = self.viewController?.webView?.customUserAgent?.contains("ForemWebView")
             XCTAssertTrue(userAgentCheck ?? false, "The UserAgent contains 'ForemWebView' for metrics")
             promise.fulfill()
@@ -50,13 +51,13 @@ class ExampleTests: XCTestCase {
         }
     }
     
-    func testDetectsUserStatusLoggedIm() throws {
+    func testDetectsUserStatusLoggedIn() throws {
         _ = viewController.view
         guard let webView = self.viewController?.webView else { return }
         let bundle = Bundle(for: type(of: self))
-        let loggedInHTML = try! String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in", ofType: "html")!)
+        let html = try! String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in", ofType: "html")!)
         
-        webView.loadHTMLString(loggedInHTML, baseURL: nil)
+        webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
@@ -73,14 +74,90 @@ class ExampleTests: XCTestCase {
         _ = viewController.view
         guard let webView = self.viewController?.webView else { return }
         let bundle = Bundle(for: type(of: self))
-        let loggedOutHTML = try! String(contentsOfFile: bundle.path(forResource: "forem.dev", ofType: "html")!)
+        let html = try! String(contentsOfFile: bundle.path(forResource: "forem.dev", ofType: "html")!)
         
-        webView.loadHTMLString(loggedOutHTML, baseURL: nil)
+        webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             webView.fetchUserStatus { (status) in
                 XCTAssertTrue(status == "logged-out")
+                promise.fulfill()
+            }
+        }
+        
+        wait(for: [promise], timeout: 5)
+    }
+    
+    func testUserDataIsNilWhenLoggedOut() throws {
+        _ = viewController.view
+        guard let webView = self.viewController?.webView else { return }
+        let bundle = Bundle(for: type(of: self))
+        let html = try! String(contentsOfFile: bundle.path(forResource: "forem.dev", ofType: "html")!)
+        
+        webView.loadHTMLString(html, baseURL: nil)
+        let promise = expectation(description: "Custom UserAgent")
+        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            webView.fetchUserData { (userData) in
+                XCTAssertNil(userData?.theme())
+                promise.fulfill()
+            }
+        }
+        
+        wait(for: [promise], timeout: 5)
+    }
+    
+    func testExtractsUserDataWithDefaultTheme() throws {
+        _ = viewController.view
+        guard let webView = self.viewController?.webView else { return }
+        let bundle = Bundle(for: type(of: self))
+        let html = try! String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in", ofType: "html")!)
+        
+        webView.loadHTMLString(html, baseURL: nil)
+        let promise = expectation(description: "Custom UserAgent")
+        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            webView.fetchUserData { (userData) in
+                XCTAssertTrue(userData?.theme() == "default")
+                promise.fulfill()
+            }
+        }
+        
+        wait(for: [promise], timeout: 5)
+    }
+    
+    func testExtractsUserDataWithPinkTheme() throws {
+        _ = viewController.view
+        guard let webView = self.viewController?.webView else { return }
+        let bundle = Bundle(for: type(of: self))
+        let html = try! String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in-pink", ofType: "html")!)
+        
+        webView.loadHTMLString(html, baseURL: nil)
+        let promise = expectation(description: "Custom UserAgent")
+        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            webView.fetchUserData { (userData) in
+                XCTAssertTrue(userData?.theme() == "pink-theme")
+                promise.fulfill()
+            }
+        }
+        
+        wait(for: [promise], timeout: 5)
+    }
+    
+    func testExtractsUserDataWithNightTheme() throws {
+        _ = viewController.view
+        guard let webView = self.viewController?.webView else { return }
+        let bundle = Bundle(for: type(of: self))
+        let html = try! String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in-dark", ofType: "html")!)
+        
+        webView.loadHTMLString(html, baseURL: nil)
+        let promise = expectation(description: "Custom UserAgent")
+        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            webView.fetchUserData { (userData) in
+                XCTAssertTrue(userData?.theme() == "night-theme")
                 promise.fulfill()
             }
         }

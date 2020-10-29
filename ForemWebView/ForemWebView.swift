@@ -26,10 +26,8 @@ open class ForemWebView: WKWebView {
         super.init(frame: frame, configuration: configuration)
         setupWebView()
     }
-
-    // MARK: - Interface functions (open)
     
-    open func setupWebView() {
+    func setupWebView() {
         // This approach maintains a UserAgent format that most servers & third party services will see us
         // as non-malicious. Example: reCaptcha may take into account a "familiarly formatted" as more
         // trustworthy compared to bots thay may use more plain strings like "Forem"/"DEV"/etc
@@ -57,6 +55,10 @@ open class ForemWebView: WKWebView {
         allowsBackForwardNavigationGestures = true
     }
     
+    // MARK: - Interface functions (open)
+    
+    // Helper function that performs a load on the webView. It's the recommended interface to use
+    // since it will keep track of the `baseHost` variable.
     open func load(_ urlString: String) {
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)
@@ -69,6 +71,8 @@ open class ForemWebView: WKWebView {
         }
     }
     
+    // Returns `true` if the url provided is considered of the supported 3rd party redirect URLs
+    // in a OAuth protocol. Returns `false` otherwise.
     open func isOAuthUrl(_ url: URL) -> Bool {
         // Takes into account GitHub OAuth paths including 2FA + error pages
         let gitHubAuth = url.absoluteString.hasPrefix("https://github.com/login") ||
@@ -85,6 +89,9 @@ open class ForemWebView: WKWebView {
         return gitHubAuth || twitterAuth || url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil
     }
 
+    // Async callback will return the value of `data-user-status` attribute in the webView HTML, which will
+    // **generally** be either `logged-in`/`logged-out`. Although unlikely, this is may change in the future so
+    // other statuses could be introduced. Also consider the possibility that `nil` may be returned (also logged-out).
     open func fetchUserStatus(completion: @escaping (String?) -> Void) {
         let javascript = "document.getElementsByTagName('body')[0].getAttribute('data-user-status')"
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
@@ -97,6 +104,8 @@ open class ForemWebView: WKWebView {
         }
     }
 
+    // Async callback will return the `ForemUserData` struct, which encapsulates some information
+    // regarding the currently logged in user. It will return `nil` if this data isn't available
     open func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
         let javascript = "document.getElementsByTagName('body')[0].getAttribute('data-user')"
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
@@ -115,8 +124,10 @@ open class ForemWebView: WKWebView {
             }
         }
     }
+    
+    // MARK: - Non-open functions
 
-    open func sendBridgeMessage(type: String, message: [String: String]) {
+    func sendBridgeMessage(type: String, message: [String: String]) {
         var jsonString = ""
         let encoder = JSONEncoder()
         if let jsonData = try? encoder.encode(message) {
@@ -131,15 +142,13 @@ open class ForemWebView: WKWebView {
             javascript = "document.getElementById('video-player-source').setAttribute('data-message', '\(jsonString)')"
         }
         
-        guard javascript.count > 0 else { return }
+        guard !javascript.isEmpty else { return }
         evaluateJavaScript(wrappedJS(javascript)) { _, error in
             if let error = error {
                 print("Error sending Podcast message (\(message)): \(error.localizedDescription)")
             }
         }
     }
-    
-    // MARK: - Non-open functions
     
     func closePodcastUI() {
         let javascript = "document.getElementById('closebutt').click()"
@@ -152,6 +161,7 @@ open class ForemWebView: WKWebView {
     }
     
     private func wrappedJS(_ javascript: String) -> String {
+        // TODO: Consider using Honeybadger/Datadog/Ahoy/etc for these error handlers (JS side)
         return "try { \(javascript) } catch (err) { console.log(err) }"
     }
 }
