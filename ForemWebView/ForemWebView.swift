@@ -145,7 +145,7 @@ open class ForemWebView: WKWebView {
         let javascript = "document.getElementById('closebutt').click()"
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard error == nil else {
-                print("Error closing Podast: \(String(describing: error))")
+                print("Error closing Podcast: \(String(describing: error))")
                 return
             }
         }

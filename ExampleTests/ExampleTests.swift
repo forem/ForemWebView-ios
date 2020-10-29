@@ -50,44 +50,41 @@ class ExampleTests: XCTestCase {
         }
     }
     
+    func testDetectsUserStatusLoggedIm() throws {
+        _ = viewController.view
+        guard let webView = self.viewController?.webView else { return }
+        let bundle = Bundle(for: type(of: self))
+        let loggedInHTML = try! String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in", ofType: "html")!)
+        
+        webView.loadHTMLString(loggedInHTML, baseURL: nil)
+        let promise = expectation(description: "Custom UserAgent")
+        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            webView.fetchUserStatus { (status) in
+                XCTAssertTrue(status == "logged-in")
+                promise.fulfill()
+            }
+        }
+        
+        wait(for: [promise], timeout: 5)
+    }
+    
     func testDetectsUserStatus() throws {
         _ = viewController.view
-//        TODO: Make this test actually work
+        guard let webView = self.viewController?.webView else { return }
+        let bundle = Bundle(for: type(of: self))
+        let loggedOutHTML = try! String(contentsOfFile: bundle.path(forResource: "forem.dev", ofType: "html")!)
         
-//        let bundle = Bundle(for: type(of: self))
-//        let baseURL = URL(string: bundle.resourcePath!)!
-//        let loggedInHTML = try? String(contentsOfFile: bundle.path(forResource: "forem.dev", ofType: "html")!)
-//        let loggedOutHTML = try? String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in", ofType: "html")!)
-//
-//        bundle.path(forResource: "forem.dev", ofType: "html")!
-//
-//
-//        var loggedOutResult: String?
-//        let loggedOutExpectation = self.expectation(description: "Logged Out")
-//
-//        viewController?.webView?.loadHTMLString(loggedInHTML!, baseURL: nil)
-//        viewController?.webView?.loadHTMLString(loggedInHTML!, baseURL: nil)
-//        viewController?.webView?.loadHTMLString(loggedInHTML!, baseURL: nil)
-//        viewController?.webView?.evaluateJavaScript("document.documentElement.outerHTML.toString()") { html, err in
-//            print(html)
-//            loggedOutExpectation.fulfill()
-//        }
-//        viewController?.webView?.fetchUserStatus { status in
-//            loggedOutResult = status
-//        }
-//
-//        waitForExpectations(timeout: 5, handler: nil)
-//        XCTAssertEqual(loggedOutResult, "logged-out")
-//
-//        var loggedInResult: String?
-//        let loggedInExpectation = self.expectation(description: "Logged In")
-//        viewController?.webView?.loadHTMLString(loggedInHTML!, baseURL: bundle.bundleURL)
-//        viewController?.webView?.fetchUserStatus { status in
-//            loggedInResult = status
-//            loggedInExpectation.fulfill()
-//        }
-//
-//        waitForExpectations(timeout: 5, handler: nil)
-//        XCTAssertEqual(loggedInResult, "logged-out")
+        webView.loadHTMLString(loggedOutHTML, baseURL: nil)
+        let promise = expectation(description: "Custom UserAgent")
+        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            webView.fetchUserStatus { (status) in
+                XCTAssertTrue(status == "logged-out")
+                promise.fulfill()
+            }
+        }
+        
+        wait(for: [promise], timeout: 5)
     }
 }
