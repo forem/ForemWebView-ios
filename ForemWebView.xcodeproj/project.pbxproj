@@ -24,6 +24,8 @@
 		DC3DAE9725229FD2004DAC13 /* forem.dev-logged-in.html in Resources */ = {isa = PBXBuildFile; fileRef = DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */; };
 		DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */; };
 		DC9EF3612549FDD5003A1BE7 /* invertedImages.css in Resources */ = {isa = PBXBuildFile; fileRef = DC9EF3602549FDD5003A1BE7 /* invertedImages.css */; };
+		DCD7C211254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html in Resources */ = {isa = PBXBuildFile; fileRef = DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */; };
+		DCD7C21F254A9EE600FAFC1D /* forem.dev-logged-in-pink.html in Resources */ = {isa = PBXBuildFile; fileRef = DCD7C21E254A9EE600FAFC1D /* forem.dev-logged-in-pink.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +81,8 @@
 		DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in.html"; sourceTree = "<group>"; };
 		DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemUserData.swift; sourceTree = "<group>"; };
 		DC9EF3602549FDD5003A1BE7 /* invertedImages.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = invertedImages.css; sourceTree = "<group>"; };
+		DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in-dark.html"; sourceTree = "<group>"; };
+		DCD7C21E254A9EE600FAFC1D /* forem.dev-logged-in-pink.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in-pink.html"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +165,8 @@
 			children = (
 				DC3DAE6625229E0B004DAC13 /* ExampleTests.swift */,
 				DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */,
+				DCD7C21E254A9EE600FAFC1D /* forem.dev-logged-in-pink.html */,
+				DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */,
 				DC3DAE9425229FD2004DAC13 /* forem.dev.html */,
 				DC3DAE6825229E0B004DAC13 /* Info.plist */,
 			);
@@ -308,7 +314,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCD7C21F254A9EE600FAFC1D /* forem.dev-logged-in-pink.html in Resources */,
 				DC3DAE9725229FD2004DAC13 /* forem.dev-logged-in.html in Resources */,
+				DCD7C211254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html in Resources */,
 				DC3DAE9625229FD2004DAC13 /* forem.dev.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
