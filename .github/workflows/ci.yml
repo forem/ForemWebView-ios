@@ -2,7 +2,7 @@ on: pull_request
 name: CI
 jobs:
   test:
-    name: Test
+    name: Test Suite
     runs-on: macOS-latest
     strategy:
         matrix:
@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@master
       - name: Build and test
         run: |
-          xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination "${destination}" test
+          set -o pipefail && xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination "${destination}" test | xcpretty
         env:
          DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
          destination: ${{ matrix.destination }}

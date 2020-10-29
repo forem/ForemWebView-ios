@@ -5,6 +5,8 @@ import WebKit
 class ExampleTests: XCTestCase {
     
     var viewController: ViewController!
+    let asyncAfter = 4.0
+    let timeout = 1.0
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,12 +23,12 @@ class ExampleTests: XCTestCase {
         _ = viewController.view
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             let userAgentCheck = self.viewController?.webView?.customUserAgent?.contains("ForemWebView")
             XCTAssertTrue(userAgentCheck ?? false, "The UserAgent contains 'ForemWebView' for metrics")
             promise.fulfill()
         }
-        wait(for: [promise], timeout: 5)
+        wait(for: [promise], timeout: timeout)
     }
     
     func testAuthUrlCheck() throws {
@@ -60,14 +62,14 @@ class ExampleTests: XCTestCase {
         webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserStatus { (status) in
                 XCTAssertTrue(status == "logged-in")
                 promise.fulfill()
             }
         }
         
-        wait(for: [promise], timeout: 5)
+        wait(for: [promise], timeout: timeout)
     }
     
     func testDetectsUserStatus() throws {
@@ -79,14 +81,14 @@ class ExampleTests: XCTestCase {
         webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserStatus { (status) in
                 XCTAssertTrue(status == "logged-out")
                 promise.fulfill()
             }
         }
         
-        wait(for: [promise], timeout: 5)
+        wait(for: [promise], timeout: timeout)
     }
     
     func testUserDataIsNilWhenLoggedOut() throws {
@@ -98,14 +100,14 @@ class ExampleTests: XCTestCase {
         webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
                 XCTAssertNil(userData?.theme())
                 promise.fulfill()
             }
         }
         
-        wait(for: [promise], timeout: 5)
+        wait(for: [promise], timeout: timeout)
     }
     
     func testExtractsUserDataWithDefaultTheme() throws {
@@ -117,14 +119,14 @@ class ExampleTests: XCTestCase {
         webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
                 XCTAssertTrue(userData?.theme() == "default")
                 promise.fulfill()
             }
         }
         
-        wait(for: [promise], timeout: 5)
+        wait(for: [promise], timeout: timeout)
     }
     
     func testExtractsUserDataWithPinkTheme() throws {
@@ -136,14 +138,14 @@ class ExampleTests: XCTestCase {
         webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
                 XCTAssertTrue(userData?.theme() == "pink-theme")
                 promise.fulfill()
             }
         }
         
-        wait(for: [promise], timeout: 5)
+        wait(for: [promise], timeout: timeout)
     }
     
     func testExtractsUserDataWithNightTheme() throws {
@@ -155,13 +157,13 @@ class ExampleTests: XCTestCase {
         webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
                 XCTAssertTrue(userData?.theme() == "night-theme")
                 promise.fulfill()
             }
         }
         
-        wait(for: [promise], timeout: 5)
+        wait(for: [promise], timeout: timeout)
     }
 }
