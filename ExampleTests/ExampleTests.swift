@@ -6,7 +6,7 @@ class ExampleTests: XCTestCase {
     
     var viewController: ViewController!
     let asyncAfter = 4.0
-    let timeout = 1.0
+    let timeout = 7.0
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
