@@ -53,7 +53,7 @@ In order for your App to take advantage of these native features via the `ForemW
 1. Make sure you enable `Audio, AirPlay, and Pciture in Picture` from the Background Mode capability in your Project's Target
 1. Configure the AVAudioSession category to `.playback`, preferrably in your AppDelegate. A one liner that works for this is `try? AVAudioSession.sharedInstance().setCategory(.playback)`
 
-The podcast player will automatically take advantage of [Background audio](https://developer.apple.com/documentation/avfoundation/media_playback_and_selection/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio) playback. If background playback is unavailable/unsupported the Podcast Player will still play the audio in your App in the foreground. However, when the App is sent to the background you'l be missing better Artwork, controls, and the playback will stop after some time.
+The podcast player will automatically take advantage of [Background audio](https://developer.apple.com/documentation/avfoundation/media_playback_and_selection/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio) playback. If background playback is unavailable/unsupported the Podcast Player will still play the audio in your App in the foreground. However, when the App is sent to the background you'll be missing better Artwork, controls, and the playback will stop after some time.
 
 ## Contributing
 
@@ -71,7 +71,7 @@ For Pull Requests:
 The tests are run using the Example app bundled in the project. You can use XCode to run the test suite or from a Terminal with the following command:
 
 ```bash
-// Make sure the `destination` param is using an iOS/Simulator available in your local development
+# Make sure the `destination` param is using an iOS/Simulator available in your local development
 set -o pipefail && xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=14.1,name=iPhone 12 Pro Max' test | xcpretty
 ```
 
