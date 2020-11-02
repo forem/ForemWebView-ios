@@ -38,16 +38,22 @@ print(webView.baseHost)
 
 You're in charge of the `navigationPolicy`, but we provide a few helper methods like `isOAuthUrl` which will help make these decisions. The current interface supports:
 
-- `load(_ urlString: String)` -> Recommended interface for programmatically loading a URL in the webView
-- `isOAuthUrl(_ url: URL) -> Bool` -> Responds to whether the url provided is one of the supported 3rd party redirect URLs in a OAuth protocol
-- `fetchUserStatus(completion: @escaping (String?) -> Void)` -> Async callback to request the user status (i.e. `logged-in`)
-- `fetchUserData(completion: @escaping (ForemUserData?) -> Void)` -> Async callback to request the `ForemUserData` struct
+- `load(_ urlString: String)`
+  - Recommended interface for programmatically loading a URL in the webView
+- `isOAuthUrl(_ url: URL) -> Bool`
+  - Responds to whether the url provided is one of the supported 3rd party redirect URLs in a OAuth protocol
+- `fetchUserStatus(completion: @escaping (String?) -> Void)`
+  - Async callback to request the user status (i.e. `logged-in`)
+- `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
+  - Async callback to request the `ForemUserData` struct
 
-## Picture in Picture video
+## Native Podcast Player & Picture in Picture video
 
-In order for your app to support PiP you'll need to configure two more things:
-1. Add the `Audio, Airplay, and Picture in Picture` Capability in your Project's Target
+In order for your App to take advantage of these native features via the `ForemWebView` you'll need two things:
+1. Make sure you enable `Audio, AirPlay, and Pciture in Picture` from the Background Mode capability in your Project's Target
 1. Configure the AVAudioSession category to `.playback`, preferrably in your AppDelegate. A one liner that works for this is `try? AVAudioSession.sharedInstance().setCategory(.playback)`
+
+The podcast player will automatically take advantage of [Background audio](https://developer.apple.com/documentation/avfoundation/media_playback_and_selection/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio) playback. If background playback is unavailable/unsupported the Podcast Player will still play the audio in your App in the foreground. However, when the App is sent to the background you'l be missing better Artwork, controls, and the playback will stop after some time.
 
 ## Contributing
 
@@ -59,6 +65,15 @@ For Pull Requests:
 1. Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): git commit -m 'Add some feature'
 1. Push to the branch: git push origin feature/that-new-feature
 1. Create a pull request for your branch 🎉
+
+#### Project Tests
+
+The tests are run using the Example app bundled in the project. You can use XCode to run the test suite or from a Terminal with the following command:
+
+```bash
+// Make sure the `destination` param is using an iOS/Simulator available in your local development
+set -o pipefail && xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=14.1,name=iPhone 12 Pro Max' test | xcpretty
+```
 
 ## License
 
