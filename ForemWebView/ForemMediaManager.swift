@@ -42,6 +42,8 @@ class ForemMediaManager: NSObject {
     }
 
     func handlePodcastMessage(_ message: [String: String]) {
+        ensureAudioSessionIsActive()
+        
         switch message["action"] {
         case "play":
             play(audioUrl: message["url"], at: message["seconds"])
@@ -73,6 +75,17 @@ class ForemMediaManager: NSObject {
         currentStreamURL = nil
         if let periodicTimeObserver = periodicTimeObserver {
             avPlayer?.removeTimeObserver(periodicTimeObserver)
+        }
+    }
+    
+    func ensureAudioSessionIsActive() {
+        let audioSession = AVAudioSession.sharedInstance()
+        if audioSession.isOtherAudioPlaying {
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+            } catch {
+                print("Failed to set audio session as Active")
+            }
         }
     }
     
