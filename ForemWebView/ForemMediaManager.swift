@@ -303,7 +303,7 @@ class ForemMediaManager: NSObject {
         if let urlString = urlString {
             resolvedURL = URL(string: urlString)
             // On local development the url might be relative and this check ensures an absolute URL
-            if let baseHost = self.webView?.baseHost, resolvedURL?.host == nil {
+            if let baseHost = self.webView?.foremInstance?.domain, resolvedURL?.host == nil {
                 resolvedURL = URL(string: "\(baseHost)\(urlString)")
             }
         }

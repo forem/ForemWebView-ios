@@ -5,7 +5,11 @@ import AVKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        try? AVAudioSession.sharedInstance().setCategory(.playback)
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback)
+        } catch {
+            print("Failed to set audio session category: \(error)")
+        }
         return true
     }
 

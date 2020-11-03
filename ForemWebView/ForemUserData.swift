@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ForemUserData: Codable {
+@objc public class ForemUserData: NSObject, Codable {
     enum CodingKeys: String, CodingKey {
         case userID = "id"
         case configBodyClass = "config_body_class"
@@ -17,5 +17,9 @@ public struct ForemUserData: Codable {
             }
         }
         return "default"
+    }
+    
+    public static func == (lfi: ForemUserData, rfi: ForemUserData) -> Bool {
+        return (lfi.userID == rfi.userID) && (lfi.configBodyClass == rfi.configBodyClass)
     }
 }

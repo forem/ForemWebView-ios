@@ -26,6 +26,11 @@
 		DC9EF3612549FDD5003A1BE7 /* invertedImages.css in Resources */ = {isa = PBXBuildFile; fileRef = DC9EF3602549FDD5003A1BE7 /* invertedImages.css */; };
 		DCD7C211254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html in Resources */ = {isa = PBXBuildFile; fileRef = DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */; };
 		DCD7C21F254A9EE600FAFC1D /* forem.dev-logged-in-pink.html in Resources */ = {isa = PBXBuildFile; fileRef = DCD7C21E254A9EE600FAFC1D /* forem.dev-logged-in-pink.html */; };
+		DCF27D5C255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF27D5B255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift */; };
+		DCF27D68255128500065770D /* bodyMutationObserver.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF27D67255128500065770D /* bodyMutationObserver.js */; };
+		DCF27D6C25514C8F0065770D /* fetchUserData.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF27D6B25514C8F0065770D /* fetchUserData.js */; };
+		DCF27D7825519F660065770D /* ForemInstanceMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */; };
+		DCF27D802551A0160065770D /* fetchForemInstanceMetadata.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF27D7F2551A0160065770D /* fetchForemInstanceMetadata.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +88,11 @@
 		DC9EF3602549FDD5003A1BE7 /* invertedImages.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = invertedImages.css; sourceTree = "<group>"; };
 		DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in-dark.html"; sourceTree = "<group>"; };
 		DCD7C21E254A9EE600FAFC1D /* forem.dev-logged-in-pink.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in-pink.html"; sourceTree = "<group>"; };
+		DCF27D5B255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForemWebView+WKNavigationDelegate.swift"; sourceTree = "<group>"; };
+		DCF27D67255128500065770D /* bodyMutationObserver.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = bodyMutationObserver.js; sourceTree = "<group>"; };
+		DCF27D6B25514C8F0065770D /* fetchUserData.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = fetchUserData.js; sourceTree = "<group>"; };
+		DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemInstanceMetadata.swift; sourceTree = "<group>"; };
+		DCF27D7F2551A0160065770D /* fetchForemInstanceMetadata.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = fetchForemInstanceMetadata.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,9 +148,14 @@
 				DC3DAE3725229D8C004DAC13 /* ForemWebView.h */,
 				DC3DAE4025229DA5004DAC13 /* ForemWebView.swift */,
 				DC3DAE4325229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift */,
+				DCF27D5B255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift */,
 				DC3DAE4625229DD7004DAC13 /* ForemMediaManager.swift */,
 				DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */,
+				DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */,
 				DC9EF3602549FDD5003A1BE7 /* invertedImages.css */,
+				DCF27D67255128500065770D /* bodyMutationObserver.js */,
+				DCF27D6B25514C8F0065770D /* fetchUserData.js */,
+				DCF27D7F2551A0160065770D /* fetchForemInstanceMetadata.js */,
 				DC3DAE3825229D8C004DAC13 /* Info.plist */,
 			);
 			path = ForemWebView;
@@ -297,6 +312,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC9EF3612549FDD5003A1BE7 /* invertedImages.css in Resources */,
+				DCF27D802551A0160065770D /* fetchForemInstanceMetadata.js in Resources */,
+				DCF27D68255128500065770D /* bodyMutationObserver.js in Resources */,
+				DCF27D6C25514C8F0065770D /* fetchUserData.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,7 +349,9 @@
 				DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */,
 				DC3DAE4125229DA5004DAC13 /* ForemWebView.swift in Sources */,
 				DC3DAE4425229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift in Sources */,
+				DCF27D5C255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift in Sources */,
 				DC3DAE4725229DD7004DAC13 /* ForemMediaManager.swift in Sources */,
+				DCF27D7825519F660065770D /* ForemInstanceMetadata.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,7 +547,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview.ForemWebView;
+				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -553,7 +573,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview.ForemWebView;
+				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -573,7 +593,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -592,7 +612,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.forem.webview.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
