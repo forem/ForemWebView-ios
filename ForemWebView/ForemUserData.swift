@@ -7,7 +7,7 @@ import Foundation
     }
     public var userID: Int
     public var configBodyClass: String
-    
+
     // Returns the UX theme in the logged-in user's settings
     public func theme() -> String {
         let regex = #".+-theme"#
@@ -18,8 +18,8 @@ import Foundation
         }
         return "default"
     }
-    
-    public static func == (lfi: ForemUserData, rfi: ForemUserData) -> Bool {
+
+    public static func isEqual(lfi: ForemUserData, rfi: ForemUserData) -> Bool {
         return (lfi.userID == rfi.userID) && (lfi.configBodyClass == rfi.configBodyClass)
     }
 }

@@ -16,7 +16,7 @@ extension ForemWebView: WKScriptMessageHandler {
         default: ()
         }
     }
-    
+
     private func handleHapticMessage(type: String) {
         switch type {
         case "heavy":
@@ -34,4 +34,3 @@ extension ForemWebView: WKScriptMessageHandler {
         }
     }
 }
-

@@ -31,6 +31,7 @@
 		DCF27D6C25514C8F0065770D /* fetchUserData.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF27D6B25514C8F0065770D /* fetchUserData.js */; };
 		DCF27D7825519F660065770D /* ForemInstanceMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */; };
 		DCF27D802551A0160065770D /* fetchForemInstanceMetadata.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF27D7F2551A0160065770D /* fetchForemInstanceMetadata.js */; };
+		DCF27D922551D2190065770D /* ForemMediaManager+LockedScreenControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF27D912551D2190065770D /* ForemMediaManager+LockedScreenControls.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		DCF27D6B25514C8F0065770D /* fetchUserData.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = fetchUserData.js; sourceTree = "<group>"; };
 		DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemInstanceMetadata.swift; sourceTree = "<group>"; };
 		DCF27D7F2551A0160065770D /* fetchForemInstanceMetadata.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = fetchForemInstanceMetadata.js; sourceTree = "<group>"; };
+		DCF27D912551D2190065770D /* ForemMediaManager+LockedScreenControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForemMediaManager+LockedScreenControls.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 				DC3DAE4325229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift */,
 				DCF27D5B255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift */,
 				DC3DAE4625229DD7004DAC13 /* ForemMediaManager.swift */,
+				DCF27D912551D2190065770D /* ForemMediaManager+LockedScreenControls.swift */,
 				DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */,
 				DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */,
 				DC9EF3602549FDD5003A1BE7 /* invertedImages.css */,
@@ -217,6 +220,7 @@
 				DC3DAE3025229D8C004DAC13 /* Sources */,
 				DC3DAE3125229D8C004DAC13 /* Frameworks */,
 				DC3DAE3225229D8C004DAC13 /* Resources */,
+				DCF27D872551C4C10065770D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -341,6 +345,26 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		DCF27D872551C4C10065770D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DC3DAE3025229D8C004DAC13 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -352,6 +376,7 @@
 				DCF27D5C255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift in Sources */,
 				DC3DAE4725229DD7004DAC13 /* ForemMediaManager.swift in Sources */,
 				DCF27D7825519F660065770D /* ForemInstanceMetadata.swift in Sources */,
+				DCF27D922551D2190065770D /* ForemMediaManager+LockedScreenControls.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
