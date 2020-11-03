@@ -11,7 +11,7 @@ The Project supports iOS 13.x but features like Picture in Picture are only avai
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate ForemWebView into your Xcode project using Carthage, specify it in your Cartfile:
 
 ```
-github "ForemWebView ~> 0.1"
+github "ForemWebView ~> 0.2"
 ```
 
 Then use [the recommended steps to include the framework in your project](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
