@@ -10,7 +10,9 @@ class ForemMediaManager: NSObject {
     var playerItem: AVPlayerItem?
     var currentStreamURL: String?
     weak var avPlayerController: AVPlayerViewController?
+
     var periodicTimeObserver: Any?
+    var videoPauseObserver: Any?
 
     var episodeName: String?
     var podcastName: String?
@@ -18,7 +20,7 @@ class ForemMediaManager: NSObject {
     var podcastVolume: Float?
     var podcastImageUrl: String?
     var podcastImageFetched: Bool = false
-    
+
     lazy var bundleIcon: UIImage? = {
         if let icons = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String: Any],
            let primaryIcon = icons["CFBundlePrimaryIcon"] as? [String: Any],
@@ -33,7 +35,7 @@ class ForemMediaManager: NSObject {
         self.webView = webView
     }
 
-    func handleVideoMessage(_ message: [String: String]) {
+    internal func handleVideoMessage(_ message: [String: String]) {
         switch message["action"] {
         case "play":
             loadVideoPlayer(videoUrl: message["url"], seconds: message["seconds"])
@@ -41,9 +43,9 @@ class ForemMediaManager: NSObject {
         }
     }
 
-    func handlePodcastMessage(_ message: [String: String]) {
+    internal func handlePodcastMessage(_ message: [String: String]) {
         ensureAudioSessionIsActive()
-        
+
         switch message["action"] {
         case "play":
             play(audioUrl: message["url"], at: message["seconds"])
@@ -60,7 +62,7 @@ class ForemMediaManager: NSObject {
             avPlayer?.pause()
         case "terminate":
             avPlayer?.pause()
-            clearPeriodicTimeObserver()
+            clearObservers()
             UIApplication.shared.endReceivingRemoteControlEvents()
         case "volume":
             podcastVolume = Float(message["volume"] ?? "1")
@@ -70,35 +72,31 @@ class ForemMediaManager: NSObject {
         default: ()
         }
     }
-    
-    func clearPeriodicTimeObserver() {
+
+    internal func clearObservers() {
         currentStreamURL = nil
-        if let periodicTimeObserver = periodicTimeObserver {
-            avPlayer?.removeTimeObserver(periodicTimeObserver)
+        periodicTimeObserver = nil
+        videoPauseObserver = nil
+    }
+
+    internal func ensureAudioSessionIsActive() {
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("Failed to set audio session as Active")
         }
     }
-    
-    func ensureAudioSessionIsActive() {
-        let audioSession = AVAudioSession.sharedInstance()
-        if audioSession.isOtherAudioPlaying {
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-            } catch {
-                print("Failed to set audio session as Active")
-            }
-        }
-    }
-    
+
     // MARK: - Video Action Functions -
-    
-    func loadVideoPlayer(videoUrl: String?, seconds: String?) {
+
+    internal func loadVideoPlayer(videoUrl: String?, seconds: String?) {
         guard AVPictureInPictureController.isPictureInPictureSupported() else {
             // TODO: Improve unsupported devices experience
             return
         }
 
         if currentStreamURL != videoUrl, let videoUrl = videoUrl, let url = NSURL(string: videoUrl) {
-            clearPeriodicTimeObserver()
+            clearObservers()
             self.webView?.closePodcastUI()
             currentStreamURL = videoUrl
             playerItem = AVPlayerItem.init(url: url as URL)
@@ -107,34 +105,32 @@ class ForemMediaManager: NSObject {
             seek(to: seconds)
             avPlayer?.play()
             startVideoTimeObserver()
-            
+
             var avPlayerControllerReference = self.avPlayerController
             if avPlayerControllerReference == nil {
                 avPlayerControllerReference = AVPlayerViewController()
                 avPlayerControllerReference?.allowsPictureInPicturePlayback = true
                 avPlayerControllerReference?.delegate = self
-                avPlayer?.addObserver(self, forKeyPath: "rate", options: .new, context: nil)
-                
+                videoPauseObserver = avPlayer?.observe(\.rate, options: .new) { (player, _) in
+                    if player.rate == 0 {
+                        self.webView?.sendBridgeMessage(type: "video", message: [ "action": "pause" ])
+                    }
+                }
+
                 // Keep weak reference
                 self.avPlayerController = avPlayerControllerReference
             } else {
                 self.webView?.closePodcastUI()
             }
-            
+
             avPlayerController?.player = avPlayer
             self.webView?.foremWebViewDelegate?.willStartNativeVideo(playerController: avPlayerControllerReference!)
-        }
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "rate" && avPlayer?.rate ?? 0 == 0 {
-            webView?.sendBridgeMessage(type: "video", message: [ "action": "pause" ])
         }
     }
 
     // MARK: - Podcast Action Functions -
 
-    private func play(audioUrl: String?, at seconds: String?) {
+    internal func play(audioUrl: String?, at seconds: String?) {
         var seconds = Double(seconds ?? "0")
         if currentStreamURL != audioUrl && audioUrl != nil {
             avPlayer?.pause()
@@ -151,12 +147,12 @@ class ForemMediaManager: NSObject {
         setupNowPlayingInfoCenter()
     }
 
-    private func seek(to seconds: String?) {
+    internal func seek(to seconds: String?) {
         guard let secondsStr = seconds, let seconds = Double(secondsStr) else { return }
         avPlayer?.seek(to: CMTime(seconds: seconds, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
     }
 
-    private func seekForward(_ sender: Any) {
+    internal func seekForward(_ sender: Any) {
         guard let duration  = avPlayer?.currentItem?.duration else { return }
         let playerCurrentTime = CMTimeGetSeconds(avPlayer!.currentTime())
         let newTime = playerCurrentTime + 15
@@ -166,7 +162,7 @@ class ForemMediaManager: NSObject {
         }
     }
 
-    private func seekBackward(_ sender: Any) {
+    internal func seekBackward(_ sender: Any) {
         let playerCurrentTime = CMTimeGetSeconds(avPlayer!.currentTime())
         var newTime = playerCurrentTime - 15
         if newTime < 0 {
@@ -175,11 +171,11 @@ class ForemMediaManager: NSObject {
         avPlayer!.seek(to: seekableTime(newTime), toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
     }
 
-    private func seekableTime(_ seconds: Double) -> CMTime {
+    internal func seekableTime(_ seconds: Double) -> CMTime {
         return CMTimeMake(value: Int64(seconds * 1000 as Float64), timescale: 1000)
     }
 
-    private func loadMetadata(from message: [String: String]) {
+    internal func loadMetadata(from message: [String: String]) {
         episodeName = message["episodeName"]
         podcastName = message["podcastName"]
         if let newImageUrl = message["podcastImageUrl"], newImageUrl != podcastImageUrl {
@@ -188,7 +184,7 @@ class ForemMediaManager: NSObject {
         }
     }
 
-    private func updateTimeLabel(currentTime: Double, duration: Double) {
+    internal func updateTimeLabel(currentTime: Double, duration: Double) {
         guard currentTime > 0 && duration > 0 else {
             webView?.sendBridgeMessage(type: "podcast", message: ["action": "init"])
             return
@@ -202,7 +198,7 @@ class ForemMediaManager: NSObject {
         webView?.sendBridgeMessage(type: "podcast", message: message)
     }
 
-    private func videoTick(currentTime: Double) {
+    internal func videoTick(currentTime: Double) {
         let message = [
             "action": "tick",
             "currentTime": String(format: "%.4f", currentTime)
@@ -210,10 +206,10 @@ class ForemMediaManager: NSObject {
         webView?.sendBridgeMessage(type: "podcast", message: message)
     }
 
-    private func load(audioUrl: String?) {
+    internal func load(audioUrl: String?) {
         guard currentStreamURL != audioUrl && audioUrl != nil else { return }
         guard let url = NSURL(string: audioUrl!) else { return }
-        clearPeriodicTimeObserver()
+        clearObservers()
         currentStreamURL = audioUrl
         playerItem = AVPlayerItem.init(url: url as URL)
         avPlayer = AVPlayer.init(playerItem: playerItem)
@@ -221,7 +217,8 @@ class ForemMediaManager: NSObject {
         updateTimeLabel(currentTime: 0, duration: 0)
 
         let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-        periodicTimeObserver = avPlayer?.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] _ in
+        periodicTimeObserver = avPlayer?.addPeriodicTimeObserver(forInterval: interval,
+                                                                 queue: DispatchQueue.main) { [weak self] _ in
             guard let duration = self?.playerItem?.duration.seconds, !duration.isNaN else { return }
             let time: Double = self?.avPlayer?.currentTime().seconds ?? 0
 
@@ -230,11 +227,12 @@ class ForemMediaManager: NSObject {
         }
     }
 
-    private func startVideoTimeObserver() {
+    internal func startVideoTimeObserver() {
         let interval = CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-        periodicTimeObserver = avPlayer?.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] _ in
+        periodicTimeObserver = avPlayer?.addPeriodicTimeObserver(forInterval: interval,
+                                                                 queue: DispatchQueue.main) { [weak self] _ in
             guard self?.avPlayerController != nil else {
-                self?.clearPeriodicTimeObserver()
+                self?.clearObservers()
                 return
             }
 
@@ -245,87 +243,6 @@ class ForemMediaManager: NSObject {
                 "currentTime": String(format: "%.4f", time)
             ]
             self?.webView?.sendBridgeMessage(type: "video", message: message)
-        }
-    }
-
-    // MARK: - Locked Screen Functions -
-
-    private func setupNowPlayingInfoCenter() {
-        UIApplication.shared.beginReceivingRemoteControlEvents()
-        let commandCenter = MPRemoteCommandCenter.shared()
-        commandCenter.skipForwardCommand.isEnabled = true
-        commandCenter.skipBackwardCommand.isEnabled = true
-        commandCenter.skipForwardCommand.preferredIntervals = [15]
-        commandCenter.skipBackwardCommand.preferredIntervals = [15]
-        commandCenter.playCommand.addTarget { _ in
-            let currentTime = String(self.avPlayer?.currentTime().seconds ?? 0)
-            self.play(audioUrl: self.currentStreamURL, at: currentTime)
-            self.updateNowPlayingInfoCenter()
-            return .success
-        }
-        commandCenter.pauseCommand.addTarget { _ in
-            self.avPlayer?.pause()
-            return .success
-        }
-        commandCenter.skipForwardCommand.addTarget { _ in
-            self.seekForward(15)
-            return .success
-        }
-        commandCenter.skipBackwardCommand.addTarget { _ in
-            self.seekBackward(15)
-            return .success
-        }
-    }
-
-    private func setupInfoCenterDefaultIcon() {
-        if let appIcon = bundleIcon {
-            let artwork = MPMediaItemArtwork(boundsSize: appIcon.size) { _ in return appIcon }
-            MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
-        }
-    }
-
-    private func updateNowPlayingInfoCenter() {
-        var info = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [:]
-        info[MPMediaItemPropertyTitle] = episodeName ?? "Podcast"
-        info[MPMediaItemPropertyArtist] = podcastName ?? "DEV Community"
-        info[MPMediaItemPropertyPlaybackDuration] = avPlayer?.currentItem?.duration.seconds ?? 0
-        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = avPlayer?.currentTime().seconds ?? 0
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
-
-        // Only attempt to fetch the image once and if unavailable setup default (App Icon)
-        guard !podcastImageFetched else { return }
-        podcastImageFetched = true
-        fetchRemoteArtwork()
-    }
-    
-    private func urlFrom(urlString: String?) -> URL? {
-        var resolvedURL: URL?
-        if let urlString = urlString {
-            resolvedURL = URL(string: urlString)
-            // On local development the url might be relative and this check ensures an absolute URL
-            if let baseHost = self.webView?.baseHost, resolvedURL?.host == nil {
-                resolvedURL = URL(string: "\(baseHost)\(urlString)")
-            }
-        }
-        return resolvedURL
-    }
-
-    private func fetchRemoteArtwork() {
-        if let resolvedURL = urlFrom(urlString: podcastImageUrl) {
-            let task = URLSession.shared.dataTask(with: resolvedURL) { data, response, error in
-                guard error == nil, let data = data,
-                    let mimeType = response?.mimeType, mimeType.contains("image/"),
-                    let image = UIImage(data: data)
-                else {
-                    self.setupInfoCenterDefaultIcon()
-                    return
-                }
-                let artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in return image }
-                MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
-            }
-            task.resume()
-        } else {
-            setupInfoCenterDefaultIcon()
         }
     }
 }

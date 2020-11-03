@@ -8,14 +8,16 @@ extension ForemWebView: WKScriptMessageHandler {
             mediaManager.handlePodcastMessage(message.body as? [String: String] ?? [:])
         case "video":
             mediaManager.handleVideoMessage(message.body as? [String: String] ?? [:])
+        case "body":
+            updateUserData()
         case "haptic":
             guard let hapticType = message.body as? String else { return }
-            handleHapticMEssage(type: hapticType)
+            handleHapticMessage(type: hapticType)
         default: ()
         }
     }
-    
-    private func handleHapticMEssage(type: String) {
+
+    private func handleHapticMessage(type: String) {
         switch type {
         case "heavy":
             let heavyImpact = UIImpactFeedbackGenerator(style: .heavy)
@@ -32,4 +34,3 @@ extension ForemWebView: WKScriptMessageHandler {
         }
     }
 }
-
