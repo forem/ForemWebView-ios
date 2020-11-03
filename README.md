@@ -29,7 +29,7 @@ Initialize the ForemWebView from Storyboard, programmatically, or however you pr
 - If your project requires more detailed access to `WKNavigationDelegate` callbacks [please add a feature request](https://github.com/forem/ForemWebView-ios/issues/new?template=feature_request.md).
 - An example project is available in this repo showcasing a simple use-case.
 
-The suggested approach to tap into the ForemWebView is:
+#### The suggested approach to tap into the ForemWebView is:
 1. Implement `ForemWebViewDelegate`
    - `func willStartNativeVideo(playerController: AVPlayerViewController)`
    - `func requestedExternalSite(url: URL)`
@@ -43,7 +43,7 @@ The suggested approach to tap into the ForemWebView is:
    - A `ForemWebViewError` will be raised if the first load was attempted on a invalid domain
    - `load(_ urlString: String)` provided for simplicity (see below)
 
-At any moment you can call any of the following helper functions:
+#### The following helper functions/variables are available for use:
 
 - `load(_ urlString: String)`
    - Helper method for simplicity: `webView.load("https://dev.to")`
@@ -53,6 +53,10 @@ At any moment you can call any of the following helper functions:
 - `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
    - Async callback to request the `ForemUserData` struct from the current state of the DOM
    - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes as they become available
+- `userData`
+   - Instance of `ForemUserData` when authenticated or `nil` otherwise
+- `foremInstance`
+   - `ForemInstanceMetadata` struct that represents the Forem Instance loaded. It will be `nil`until the first page load
 
 ## Native Podcast Player & Picture in Picture video
 
