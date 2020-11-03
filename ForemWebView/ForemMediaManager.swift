@@ -79,13 +79,10 @@ class ForemMediaManager: NSObject {
     }
     
     func ensureAudioSessionIsActive() {
-        let audioSession = AVAudioSession.sharedInstance()
-        if audioSession.isOtherAudioPlaying {
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-            } catch {
-                print("Failed to set audio session as Active")
-            }
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("Failed to set audio session as Active")
         }
     }
     
