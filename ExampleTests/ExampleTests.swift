@@ -1,5 +1,6 @@
 import XCTest
 import WebKit
+import ForemWebView
 @testable import Example
 
 class ExampleTests: XCTestCase {
@@ -95,7 +96,7 @@ class ExampleTests: XCTestCase {
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
-                XCTAssertTrue(userData?.theme() == "default")
+                XCTAssertTrue(userData?.theme() == .base)
                 promise.fulfill()
             }
         }
@@ -114,7 +115,7 @@ class ExampleTests: XCTestCase {
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
-                XCTAssertTrue(userData?.theme() == "pink-theme")
+                XCTAssertTrue(userData?.theme() == .pink)
                 promise.fulfill()
             }
         }
@@ -133,7 +134,7 @@ class ExampleTests: XCTestCase {
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
-                XCTAssertTrue(userData?.theme() == "night-theme")
+                XCTAssertTrue(userData?.theme() == .night)
                 promise.fulfill()
             }
         }
