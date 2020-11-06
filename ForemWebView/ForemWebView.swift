@@ -14,6 +14,10 @@ public enum ForemWebViewError: Error {
     case invalidInstance(String)
 }
 
+public enum ForemWebViewTheme {
+    case base, night, minimal, pink, hacker
+}
+
 open class ForemWebView: WKWebView {
 
     var videoPlayerLayer: AVPlayerLayer?

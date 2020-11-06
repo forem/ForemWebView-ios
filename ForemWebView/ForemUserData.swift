@@ -9,14 +9,27 @@ import Foundation
     public var configBodyClass: String
 
     // Returns the UX theme in the logged-in user's settings
-    public func theme() -> String {
+    public func theme() -> ForemWebViewTheme {
+        var themeName = ""
         let regex = #".+-theme"#
         for element in configBodyClass.split(separator: " ") {
             if let range = element.range(of: regex, options: .regularExpression) {
-                return String(element[range])
+                themeName = String(element[range])
             }
         }
-        return "default"
+        
+        switch themeName {
+        case "night-theme":
+            return .night
+        case "minimal-light-theme":
+            return .minimal
+        case "pink-theme":
+            return .pink
+        case "ten-x-hacker-theme":
+            return .hacker
+        default:
+            return .base
+        }
     }
 
     public static func isEqual(lfi: ForemUserData, rfi: ForemUserData) -> Bool {
