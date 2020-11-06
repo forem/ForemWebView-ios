@@ -6,6 +6,8 @@ extension ForemWebView: WKNavigationDelegate {
     }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        //Remove scroll if /connect view
+        webView.scrollView.isScrollEnabled = !(webView.url?.path.hasPrefix("/connect") ?? false)
         ensureForemInstance()
         ensureMutationObserver()
         foremWebViewDelegate?.didFinishNavigation()
