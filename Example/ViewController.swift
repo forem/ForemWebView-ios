@@ -14,7 +14,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.foremWebViewDelegate = self
-        webView.load("https://dev.to")
+//        webView.load("https://dev.to")
+        webView.load("https://fdoxyz.ngrok.io")
         activityIndicator.startAnimating()
 
         // Observations need to be retained in order for them to work
