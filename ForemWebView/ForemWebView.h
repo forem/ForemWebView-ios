@@ -7,5 +7,3 @@ FOUNDATION_EXPORT double ForemWebViewVersionNumber;
 FOUNDATION_EXPORT const unsigned char ForemWebViewVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <ForemWebView/PublicHeader.h>
-
-

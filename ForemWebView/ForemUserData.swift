@@ -17,7 +17,7 @@ import Foundation
                 themeName = String(element[range])
             }
         }
-        
+
         switch themeName {
         case "night-theme":
             return .night

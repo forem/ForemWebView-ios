@@ -196,30 +196,6 @@ open class ForemWebView: WKWebView {
         }
     }
 
-    // Helper function that will send Bridge messages into the DOM
-    func sendBridgeMessage(type: String, message: [String: String]) {
-        var jsonString = ""
-        let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(message) {
-            jsonString = String(data: jsonData, encoding: .utf8) ?? ""
-        }
-
-        var javascript = ""
-        // Supported messages
-        if type == "podcast" {
-            javascript = "document.getElementById('audiocontent').setAttribute('data-podcast', '\(jsonString)')"
-        } else if type == "video" {
-            javascript = "document.getElementById('video-player-source').setAttribute('data-message', '\(jsonString)')"
-        }
-
-        guard !javascript.isEmpty else { return }
-        evaluateJavaScript(wrappedJS(javascript)) { _, error in
-            if let error = error {
-                print("Error sending Podcast message (\(message)): \(error.localizedDescription)")
-            }
-        }
-    }
-
     // Helper function to close the Podcast Player UI in the DOM
     func closePodcastUI() {
         let javascript = "document.getElementById('closebutt').click()"
@@ -232,7 +208,7 @@ open class ForemWebView: WKWebView {
     }
 
     // Helper function to wrap JS errors in a way we don't pollute the JS Context with Mobile specific errors
-    private func wrappedJS(_ javascript: String) -> String {
+    internal func wrappedJS(_ javascript: String) -> String {
         // TODO: Consider using Honeybadger/Datadog/Ahoy/etc for these error handlers (JS side)
         return "try { \(javascript) } catch (err) { console.log(err) }"
     }
