@@ -31,6 +31,9 @@ open class ForemWebView: WKWebView {
         return ForemMediaManager(webView: self)
     }()
 
+    var history = ForemWebViewHistory()
+    open override var backForwardList: ForemWebViewHistory { return history }
+
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupWebView()
