@@ -159,7 +159,6 @@ open class ForemWebView: WKWebView {
     // Function that will ensure the ForemWebView is initialized using a valid Forem Instance. It will
     // update `foremInstance` variable which will help provide metadata about the initialized ForemWebView.
     // It will also call `failIfInvalidInstanceError` if unable to populate the metadata on the first load.
-    // swiftlint:disable force_try
     func ensureForemInstance() {
         guard foremInstance == nil else { return }
 
@@ -173,7 +172,6 @@ open class ForemWebView: WKWebView {
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard let jsonString = result as? String else {
                 print("Unable to fetch Forem Instance Metadata: \(String(describing: error))")
-                try! self.failIfInvalidInstanceError()
                 return
             }
 
@@ -182,17 +180,6 @@ open class ForemWebView: WKWebView {
             } catch {
                 print("Error parsing Forem Instance Metadata: \(error)")
             }
-
-            try! self.failIfInvalidInstanceError()
-        }
-    }
-    // swiftlint:enable force_try
-
-    // Helper function that will throw an error when the ForemWebView is initialized with a URL
-    // that does not represent a valid Forem Instance.
-    func failIfInvalidInstanceError() throws {
-        if self.foremInstance == nil {
-            throw ForemWebViewError.invalidInstance("Only Forem Instances are supported for this WebView")
         }
     }
 
