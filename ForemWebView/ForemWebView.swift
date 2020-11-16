@@ -95,7 +95,7 @@ open class ForemWebView: WKWebView {
 
         // Regex that into account Facebook OAuth based on their API versions
         // Example: "https://www.facebook.com/v4.0/dialog/oauth"
-        let fbRegex =  #"https://www\.facebook\.com/v\d+.\d+/dialog/oauth"#
+        let fbRegex =  #"https://(www|m)?\.facebook\.com/(v\d+.\d+/dialog/oauth|login.php)"#
 
         return gitHubAuth || twitterAuth || url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil
     }

@@ -57,7 +57,10 @@ class ExampleTests: XCTestCase {
             """,
             "https://www.facebook.com/v4.0/dialog/oauth",
             "https://www.facebook.com/v5.9/dialog/oauth",
-            "https://www.facebook.com/v6.0/dialog/oauth"
+            "https://www.facebook.com/v6.0/dialog/oauth",
+            "https://m.facebook.com/v4.0/dialog/oauth",
+            "https://m.facebook.com/v6.0/dialog/oauth",
+            "https://m.facebook.com/login.php?skip_api_login=1&api_key=asdf"
         ]
         for urlString in urlStrings {
             if let url = URL(string: urlString) {
