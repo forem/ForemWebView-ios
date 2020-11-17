@@ -69,6 +69,10 @@ open class ForemWebView: WKWebView {
         configuration.mediaTypesRequiringUserActionForPlayback = []
         allowsBackForwardNavigationGestures = true
         navigationDelegate = self
+
+        let gestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeBack))
+        gestureRecognizer.direction = .right
+        self.addGestureRecognizer(gestureRecognizer)
     }
 
     // MARK: - Interface functions (open)
@@ -135,6 +139,14 @@ open class ForemWebView: WKWebView {
             if self.userData != userData {
                 self.userData = userData
             }
+        }
+    }
+
+    // Function that handles the swipe back from within the WebView for a more native fell navigation
+    @objc func swipeBack() {
+        guard let path = url?.path, foremInstance != nil else { return }
+        if path != "/" && canGoBack {
+            goBack()
         }
     }
 
