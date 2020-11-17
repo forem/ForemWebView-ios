@@ -10,6 +10,12 @@ extension ForemWebView: WKNavigationDelegate {
         webView.scrollView.isScrollEnabled = !(webView.url?.path.hasPrefix("/connect") ?? false)
         ensureForemInstance()
         ensureMutationObserver()
+        if let url = webView.url, let params = url.queryParameters, params["signin"] == "true" {
+            history.clearBackList()
+            print("CLEARED!!!!!!!!!!!!")
+        } else {
+            print("NOOOOOOOOOOOTTTTT")
+        }
         foremWebViewDelegate?.didFinishNavigation()
     }
 

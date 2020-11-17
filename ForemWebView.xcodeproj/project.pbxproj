@@ -10,7 +10,6 @@
 		DC3DAE3925229D8C004DAC13 /* ForemWebView.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3DAE3725229D8C004DAC13 /* ForemWebView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DC3DAE4125229DA5004DAC13 /* ForemWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DAE4025229DA5004DAC13 /* ForemWebView.swift */; };
 		DC3DAE4425229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DAE4325229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift */; };
-		DC3DAE4725229DD7004DAC13 /* ForemMediaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DAE4625229DD7004DAC13 /* ForemMediaManager.swift */; };
 		DC3DAE5025229E08004DAC13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DAE4F25229E08004DAC13 /* AppDelegate.swift */; };
 		DC3DAE5225229E08004DAC13 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DAE5125229E08004DAC13 /* SceneDelegate.swift */; };
 		DC3DAE5425229E08004DAC13 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3DAE5325229E08004DAC13 /* ViewController.swift */; };
@@ -22,8 +21,13 @@
 		DC3DAE8325229E18004DAC13 /* ForemWebView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC3DAE3425229D8C004DAC13 /* ForemWebView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC3DAE9625229FD2004DAC13 /* forem.dev.html in Resources */ = {isa = PBXBuildFile; fileRef = DC3DAE9425229FD2004DAC13 /* forem.dev.html */; };
 		DC3DAE9725229FD2004DAC13 /* forem.dev-logged-in.html in Resources */ = {isa = PBXBuildFile; fileRef = DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */; };
-		DC6576432559CCDD00B5B46F /* ForemMediaManager+PodcastActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6576422559CCDC00B5B46F /* ForemMediaManager+PodcastActions.swift */; };
+		DC6576232559815B00B5B46F /* WebViewHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6576222559815B00B5B46F /* WebViewHistory.swift */; };
+		DC6576292559898900B5B46F /* URL+QueryParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6576282559898900B5B46F /* URL+QueryParameters.swift */; };
+		DC6576432559CCDD00B5B46F /* (null) in Sources */ = {isa = PBXBuildFile; };
 		DC6576472559CCED00B5B46F /* ForemMediaManager+VideoActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6576462559CCED00B5B46F /* ForemMediaManager+VideoActions.swift */; };
+		DC65765C2559E2EF00B5B46F /* ForemMediaManager+PodcastActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6576592559E2EF00B5B46F /* ForemMediaManager+PodcastActions.swift */; };
+		DC65765D2559E2EF00B5B46F /* ForemMediaManager+LockedScreenControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC65765A2559E2EF00B5B46F /* ForemMediaManager+LockedScreenControls.swift */; };
+		DC65765E2559E2EF00B5B46F /* ForemMediaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC65765B2559E2EF00B5B46F /* ForemMediaManager.swift */; };
 		DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */; };
 		DC9EF3612549FDD5003A1BE7 /* invertedImages.css in Resources */ = {isa = PBXBuildFile; fileRef = DC9EF3602549FDD5003A1BE7 /* invertedImages.css */; };
 		DCD7C211254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html in Resources */ = {isa = PBXBuildFile; fileRef = DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */; };
@@ -33,7 +37,6 @@
 		DCF27D6C25514C8F0065770D /* fetchUserData.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF27D6B25514C8F0065770D /* fetchUserData.js */; };
 		DCF27D7825519F660065770D /* ForemInstanceMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */; };
 		DCF27D802551A0160065770D /* fetchForemInstanceMetadata.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF27D7F2551A0160065770D /* fetchForemInstanceMetadata.js */; };
-		DCF27D922551D2190065770D /* ForemMediaManager+LockedScreenControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF27D912551D2190065770D /* ForemMediaManager+LockedScreenControls.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,7 +76,6 @@
 		DC3DAE3825229D8C004DAC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC3DAE4025229DA5004DAC13 /* ForemWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemWebView.swift; sourceTree = "<group>"; };
 		DC3DAE4325229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForemWebView+WKScriptMessageHandler.swift"; sourceTree = "<group>"; };
-		DC3DAE4625229DD7004DAC13 /* ForemMediaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemMediaManager.swift; sourceTree = "<group>"; };
 		DC3DAE4D25229E08004DAC13 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC3DAE4F25229E08004DAC13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC3DAE5125229E08004DAC13 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -87,8 +89,12 @@
 		DC3DAE6825229E0B004DAC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC3DAE9425229FD2004DAC13 /* forem.dev.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = forem.dev.html; sourceTree = "<group>"; };
 		DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in.html"; sourceTree = "<group>"; };
-		DC6576422559CCDC00B5B46F /* ForemMediaManager+PodcastActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForemMediaManager+PodcastActions.swift"; sourceTree = "<group>"; };
+		DC6576222559815B00B5B46F /* WebViewHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewHistory.swift; sourceTree = "<group>"; };
+		DC6576282559898900B5B46F /* URL+QueryParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+QueryParameters.swift"; sourceTree = "<group>"; };
 		DC6576462559CCED00B5B46F /* ForemMediaManager+VideoActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForemMediaManager+VideoActions.swift"; sourceTree = "<group>"; };
+		DC6576592559E2EF00B5B46F /* ForemMediaManager+PodcastActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ForemMediaManager+PodcastActions.swift"; sourceTree = "<group>"; };
+		DC65765A2559E2EF00B5B46F /* ForemMediaManager+LockedScreenControls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ForemMediaManager+LockedScreenControls.swift"; sourceTree = "<group>"; };
+		DC65765B2559E2EF00B5B46F /* ForemMediaManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForemMediaManager.swift; sourceTree = "<group>"; };
 		DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemUserData.swift; sourceTree = "<group>"; };
 		DC9EF3602549FDD5003A1BE7 /* invertedImages.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = invertedImages.css; sourceTree = "<group>"; };
 		DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in-dark.html"; sourceTree = "<group>"; };
@@ -98,7 +104,6 @@
 		DCF27D6B25514C8F0065770D /* fetchUserData.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = fetchUserData.js; sourceTree = "<group>"; };
 		DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemInstanceMetadata.swift; sourceTree = "<group>"; };
 		DCF27D7F2551A0160065770D /* fetchForemInstanceMetadata.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = fetchForemInstanceMetadata.js; sourceTree = "<group>"; };
-		DCF27D912551D2190065770D /* ForemMediaManager+LockedScreenControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForemMediaManager+LockedScreenControls.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +160,8 @@
 				DC3DAE4025229DA5004DAC13 /* ForemWebView.swift */,
 				DC3DAE4325229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift */,
 				DCF27D5B255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift */,
+				DC6576222559815B00B5B46F /* WebViewHistory.swift */,
+				DC6576282559898900B5B46F /* URL+QueryParameters.swift */,
 				DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */,
 				DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */,
 				DC3DAE3825229D8C004DAC13 /* Info.plist */,
@@ -212,10 +219,10 @@
 		DC65764D2559CE1E00B5B46F /* Media Manager */ = {
 			isa = PBXGroup;
 			children = (
-				DC3DAE4625229DD7004DAC13 /* ForemMediaManager.swift */,
-				DC6576422559CCDC00B5B46F /* ForemMediaManager+PodcastActions.swift */,
+				DC65765B2559E2EF00B5B46F /* ForemMediaManager.swift */,
+				DC6576592559E2EF00B5B46F /* ForemMediaManager+PodcastActions.swift */,
 				DC6576462559CCED00B5B46F /* ForemMediaManager+VideoActions.swift */,
-				DCF27D912551D2190065770D /* ForemMediaManager+LockedScreenControls.swift */,
+				DC65765A2559E2EF00B5B46F /* ForemMediaManager+LockedScreenControls.swift */,
 			);
 			path = "Media Manager";
 			sourceTree = "<group>";
@@ -394,13 +401,16 @@
 			files = (
 				DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */,
 				DC3DAE4125229DA5004DAC13 /* ForemWebView.swift in Sources */,
+				DC65765E2559E2EF00B5B46F /* ForemMediaManager.swift in Sources */,
+				DC6576232559815B00B5B46F /* WebViewHistory.swift in Sources */,
 				DC3DAE4425229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift in Sources */,
+				DC6576292559898900B5B46F /* URL+QueryParameters.swift in Sources */,
+				DC65765C2559E2EF00B5B46F /* ForemMediaManager+PodcastActions.swift in Sources */,
 				DCF27D5C255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift in Sources */,
 				DC6576472559CCED00B5B46F /* ForemMediaManager+VideoActions.swift in Sources */,
-				DC3DAE4725229DD7004DAC13 /* ForemMediaManager.swift in Sources */,
 				DCF27D7825519F660065770D /* ForemInstanceMetadata.swift in Sources */,
-				DCF27D922551D2190065770D /* ForemMediaManager+LockedScreenControls.swift in Sources */,
-				DC6576432559CCDD00B5B46F /* ForemMediaManager+PodcastActions.swift in Sources */,
+				DC6576432559CCDD00B5B46F /* (null) in Sources */,
+				DC65765D2559E2EF00B5B46F /* ForemMediaManager+LockedScreenControls.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
