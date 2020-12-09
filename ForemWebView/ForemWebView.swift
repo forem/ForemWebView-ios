@@ -61,6 +61,7 @@ open class ForemWebView: WKWebView {
         configuration.userContentController.add(self, name: "haptic")
         configuration.userContentController.add(self, name: "body")
         configuration.userContentController.add(self, name: "podcast")
+        configuration.userContentController.add(self, name: "imageUpload")
         if AVPictureInPictureController.isPictureInPictureSupported() {
             configuration.userContentController.add(self, name: "video")
         }

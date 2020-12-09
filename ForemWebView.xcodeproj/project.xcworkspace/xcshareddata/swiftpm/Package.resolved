@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "PryntTrimmerView",
+        "repositoryURL": "https://github.com/HHK1/PryntTrimmerView",
+        "state": {
+          "branch": null,
+          "revision": "ac1b60a22c7e6a6514de7a66d2f3d5b537c956d5",
+          "version": "4.0.2"
+        }
+      },
+      {
+        "package": "Stevia",
+        "repositoryURL": "https://github.com/freshOS/Stevia",
+        "state": {
+          "branch": null,
+          "revision": "e1e8dc40deab3a863a35a7a0aab10f7304f4b42a",
+          "version": "5.1.0"
+        }
+      },
+      {
+        "package": "YPImagePicker",
+        "repositoryURL": "https://github.com/Yummypets/YPImagePicker",
+        "state": {
+          "branch": "spm",
+          "revision": "2cf2d150bb0861f2079bc44b56c17aabf5e5d5aa",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

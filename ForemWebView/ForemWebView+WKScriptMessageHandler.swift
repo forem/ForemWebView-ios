@@ -1,4 +1,5 @@
 import WebKit
+import YPImagePicker
 
 enum BridgeMessageType {
     case podcast, video
@@ -14,6 +15,8 @@ extension ForemWebView: WKScriptMessageHandler {
             mediaManager.handleVideoMessage(message.body as? [String: String] ?? [:])
         case "body":
             updateUserData()
+        case "imageUpload":
+            handleImagePicker(message.body as? [String: String] ?? [:])
         case "haptic":
             guard let hapticType = message.body as? String else { return }
             handleHapticMessage(type: hapticType)
@@ -60,6 +63,25 @@ extension ForemWebView: WKScriptMessageHandler {
         default:
             let notification = UINotificationFeedbackGenerator()
             notification.notificationOccurred(.success)
+        }
+    }
+
+    private func handleImagePicker(_ message: [String: String]) {
+        let picker = YPImagePicker()
+        picker.didFinishPicking { [unowned picker] items, _ in
+            if let photo = items.singlePhoto {
+                print(photo.fromCamera) // Image source (camera or library)
+                print(photo.image) // Final image selected by the user
+                print(photo.originalImage) // original image selected by the user, unfiltered
+                print(photo.modifiedImage) // Transformed image, can be nil
+                print(photo.exifMeta) // Print exif meta data of original image.
+            }
+            picker.dismiss(animated: true, completion: nil)
+        }
+
+        if let delegateViewController = foremWebViewDelegate as? UIViewController {
+            delegateViewController.present(picker, animated: true, completion: nil)
+//            ps.showPreview(animate: true, sender: sender)
         }
     }
 }
