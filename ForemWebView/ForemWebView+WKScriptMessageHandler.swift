@@ -1,3 +1,4 @@
+import UIKit
 import WebKit
 import YPImagePicker
 
@@ -67,6 +68,14 @@ extension ForemWebView: WKScriptMessageHandler {
     }
 
     private func handleImagePicker(_ message: [String: String]) {
+        fetchCSRF { (res) in
+            print("RES: \(res)")
+            print("RES")
+        }
+        
+        // TODO: Consider possible scenarios where the guard fails
+        guard let elementId = message["id"] else { return }
+        
         let picker = YPImagePicker()
         picker.didFinishPicking { [unowned picker] items, _ in
             if let photo = items.singlePhoto {
@@ -75,6 +84,8 @@ extension ForemWebView: WKScriptMessageHandler {
                 print(photo.originalImage) // original image selected by the user, unfiltered
                 print(photo.modifiedImage) // Transformed image, can be nil
                 print(photo.exifMeta) // Print exif meta data of original image.
+//                print(photo.exifMeta["Orientation"])
+                self.injectImageForUpload(elementId: elementId, image: photo.image)
             }
             picker.dismiss(animated: true, completion: nil)
         }
@@ -83,5 +94,46 @@ extension ForemWebView: WKScriptMessageHandler {
             delegateViewController.present(picker, animated: true, completion: nil)
 //            ps.showPreview(animate: true, sender: sender)
         }
+    }
+
+    private func injectImageForUpload(elementId: String, image: UIImage) {
+        // If the image has a large dimension make sure we resize
+        var imageSize = image.size
+        if image.size.width > 1000 {
+            let ratio = 1000.0 / image.size.width
+            imageSize = CGSize(width: ratio * imageSize.width, height: ratio * imageSize.height)
+        } else if image.size.height > 1000 {
+            let ratio = 1000.0 / image.size.height
+            imageSize = CGSize(width: ratio * imageSize.width, height: ratio * imageSize.height)
+        }
+
+        if let token = csrfToken, let domain = self.foremInstance?.domain {
+            let uploadUrl = "https://\(domain)/image_uploads"
+            image.imageResized(to: imageSize).uploadToForem(uploadUrl: uploadUrl, token: token) { (result) in
+                if let result = result {
+                    print("AWWWW YEAHHH: \(result)")
+                } else {
+                    print("AWWWW NNOOOAAAAHH")
+                }
+            }
+        } else {
+            print("ERROROROROOROR")
+        }
+
+//        guard let imageData = image.imageResized(to: imageSize).pngData() else { return }
+//        let base64Data = "img-src data:image/png;base64, \(imageData.base64EncodedString())"
+//        let javascript = """
+//                            let element = document.getElementById('\(elementId)');
+//                            element.value = '\(base64Data)';
+//                            let changeEvent = new Event('change', { bubbles: true });
+//                            element.dispatchEvent(changeEvent);
+//                         """
+//
+//        evaluateJavaScript(wrappedJS(javascript)) { _, error in
+//            guard error == nil else {
+//                print("Error closing Podcast: \(String(describing: error))")
+//                return
+//            }
+//        }
     }
 }

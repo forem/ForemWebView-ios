@@ -24,6 +24,7 @@ open class ForemWebView: WKWebView {
 
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
+    open var csrfToken: String?
 
     @objc open dynamic var userData: ForemUserData?
 
@@ -130,11 +131,25 @@ open class ForemWebView: WKWebView {
 
     // MARK: - Non-open functions
 
+    func fetchCSRF(completion: @escaping (String?) -> Void) {
+        evaluateJavaScript(wrappedJS("window.csrfToken")) { result, error in
+            if let error = error {
+                print("Unable to fetch CSRF Token: \(error.localizedDescription)")
+                completion(nil)
+            } else {
+                completion(result as? String ?? nil)
+            }
+        }
+    }
+
     // Function that will update the observable userData variable by reusing `fetchUserData`
     func updateUserData() {
         self.fetchUserData { (userData) in
             if self.userData != userData {
                 self.userData = userData
+                self.fetchCSRF { (result) in
+                    self.csrfToken = result
+                }
             }
         }
     }
