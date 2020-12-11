@@ -30,12 +30,7 @@
 		DCA40E542582C73100D463DC /* UIImage+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E532582C73100D463DC /* UIImage+Utilities.swift */; };
 		DCA40E552582C73100D463DC /* UIImage+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E532582C73100D463DC /* UIImage+Utilities.swift */; };
 		DCA40E562582C73100D463DC /* UIImage+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E532582C73100D463DC /* UIImage+Utilities.swift */; };
-		DCA40E5C2582D0B500D463DC /* CharacterSet+URLQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E5B2582D0B500D463DC /* CharacterSet+URLQuery.swift */; };
-		DCA40E5D2582D0B500D463DC /* CharacterSet+URLQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E5B2582D0B500D463DC /* CharacterSet+URLQuery.swift */; };
-		DCA40E5E2582D0B500D463DC /* CharacterSet+URLQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E5B2582D0B500D463DC /* CharacterSet+URLQuery.swift */; };
-		DCA40E622582D0D200D463DC /* Dictionary+PercentEncoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E612582D0D200D463DC /* Dictionary+PercentEncoded.swift */; };
-		DCA40E632582D0D200D463DC /* Dictionary+PercentEncoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E612582D0D200D463DC /* Dictionary+PercentEncoded.swift */; };
-		DCA40E642582D0D200D463DC /* Dictionary+PercentEncoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA40E612582D0D200D463DC /* Dictionary+PercentEncoded.swift */; };
+		DCA40E772583C45E00D463DC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = DCA40E762583C45E00D463DC /* Alamofire */; };
 		DCD7C211254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html in Resources */ = {isa = PBXBuildFile; fileRef = DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */; };
 		DCD7C21F254A9EE600FAFC1D /* forem.dev-logged-in-pink.html in Resources */ = {isa = PBXBuildFile; fileRef = DCD7C21E254A9EE600FAFC1D /* forem.dev-logged-in-pink.html */; };
 		DCF27D5C255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF27D5B255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift */; };
@@ -102,8 +97,6 @@
 		DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForemUserData.swift; sourceTree = "<group>"; };
 		DC9EF3602549FDD5003A1BE7 /* invertedImages.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = invertedImages.css; sourceTree = "<group>"; };
 		DCA40E532582C73100D463DC /* UIImage+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Utilities.swift"; sourceTree = "<group>"; };
-		DCA40E5B2582D0B500D463DC /* CharacterSet+URLQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+URLQuery.swift"; sourceTree = "<group>"; };
-		DCA40E612582D0D200D463DC /* Dictionary+PercentEncoded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+PercentEncoded.swift"; sourceTree = "<group>"; };
 		DCD7C210254A9B4D00FAFC1D /* forem.dev-logged-in-dark.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in-dark.html"; sourceTree = "<group>"; };
 		DCD7C21E254A9EE600FAFC1D /* forem.dev-logged-in-pink.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "forem.dev-logged-in-pink.html"; sourceTree = "<group>"; };
 		DCF27D5B255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForemWebView+WKNavigationDelegate.swift"; sourceTree = "<group>"; };
@@ -120,6 +113,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC9C221A2581824B00B0F801 /* YPImagePicker in Frameworks */,
+				DCA40E772583C45E00D463DC /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,8 +166,6 @@
 				DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */,
 				DCF27D7725519F660065770D /* ForemInstanceMetadata.swift */,
 				DCA40E532582C73100D463DC /* UIImage+Utilities.swift */,
-				DCA40E5B2582D0B500D463DC /* CharacterSet+URLQuery.swift */,
-				DCA40E612582D0D200D463DC /* Dictionary+PercentEncoded.swift */,
 				DC3DAE3825229D8C004DAC13 /* Info.plist */,
 				DC65764D2559CE1E00B5B46F /* Media Manager */,
 				DC65764A2559CDA900B5B46F /* JavaScript & CSS */,
@@ -268,6 +260,7 @@
 			name = ForemWebView;
 			packageProductDependencies = (
 				DC9C22192581824B00B0F801 /* YPImagePicker */,
+				DCA40E762583C45E00D463DC /* Alamofire */,
 			);
 			productName = ForemWebView;
 			productReference = DC3DAE3425229D8C004DAC13 /* ForemWebView.framework */;
@@ -343,6 +336,7 @@
 			mainGroup = DC3DAE2A25229D8C004DAC13;
 			packageReferences = (
 				DC9C22182581824B00B0F801 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
+				DCA40E752583C45D00D463DC /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = DC3DAE3525229D8C004DAC13 /* Products */;
 			projectDirPath = "";
@@ -417,7 +411,6 @@
 			files = (
 				DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */,
 				DC3DAE4125229DA5004DAC13 /* ForemWebView.swift in Sources */,
-				DCA40E622582D0D200D463DC /* Dictionary+PercentEncoded.swift in Sources */,
 				DC3DAE4425229DBB004DAC13 /* ForemWebView+WKScriptMessageHandler.swift in Sources */,
 				DCA40E542582C73100D463DC /* UIImage+Utilities.swift in Sources */,
 				DCF27D5C255116EF0065770D /* ForemWebView+WKNavigationDelegate.swift in Sources */,
@@ -426,7 +419,6 @@
 				DCF27D7825519F660065770D /* ForemInstanceMetadata.swift in Sources */,
 				DCF27D922551D2190065770D /* ForemMediaManager+LockedScreenControls.swift in Sources */,
 				DC6576432559CCDD00B5B46F /* ForemMediaManager+PodcastActions.swift in Sources */,
-				DCA40E5C2582D0B500D463DC /* CharacterSet+URLQuery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,8 +427,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC3DAE5425229E08004DAC13 /* ViewController.swift in Sources */,
-				DCA40E5D2582D0B500D463DC /* CharacterSet+URLQuery.swift in Sources */,
-				DCA40E632582D0D200D463DC /* Dictionary+PercentEncoded.swift in Sources */,
 				DCA40E552582C73100D463DC /* UIImage+Utilities.swift in Sources */,
 				DC3DAE5025229E08004DAC13 /* AppDelegate.swift in Sources */,
 				DC3DAE5225229E08004DAC13 /* SceneDelegate.swift in Sources */,
@@ -447,9 +437,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCA40E5E2582D0B500D463DC /* CharacterSet+URLQuery.swift in Sources */,
 				DC3DAE6725229E0B004DAC13 /* ExampleTests.swift in Sources */,
-				DCA40E642582D0D200D463DC /* Dictionary+PercentEncoded.swift in Sources */,
 				DCA40E562582C73100D463DC /* UIImage+Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -798,6 +786,14 @@
 				kind = branch;
 			};
 		};
+		DCA40E752583C45D00D463DC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.4.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -805,6 +801,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DC9C22182581824B00B0F801 /* XCRemoteSwiftPackageReference "YPImagePicker" */;
 			productName = YPImagePicker;
+		};
+		DCA40E762583C45E00D463DC /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCA40E752583C45D00D463DC /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

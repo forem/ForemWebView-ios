@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 extension UIImage {
     func imageResized(to size: CGSize) -> UIImage {
@@ -14,40 +15,40 @@ extension UIImage {
         }
     }
 
-    func uploadToForem(uploadUrl: String, token: String, completion: @escaping (String?) -> Void) {
-        guard let url = URL(string: uploadUrl), let uploadData = pngData() else {
-            completion(nil)
+    // This function will upload the UIImage to a Forem directly and will use a completion callback.
+    // The first param in the callback will provide the uploaded image URL on success and the second
+    // param will contain an error message if the upload was unsuccessful
+    func uploadToForem(uploadUrl: String, token: String, completion: @escaping (String?, String?) -> Void) {
+        guard let url = URL(string: uploadUrl), let uploadData = jpegData(compressionQuality: 0.9) else {
+            completion(nil, nil)
             return
         }
 
-        var request = URLRequest(url: url)
-        request.setValue("multipart/form-data", forHTTPHeaderField: "Content-Type")
-        request.setValue(token, forHTTPHeaderField: "X-CSRF-Token")
-        request.httpMethod = "POST"
-        let parameters: [String: Any] = [
-            "authenticity_token": token,
-            "image[]": uploadData
+        let uploadHeaders: HTTPHeaders = [
+            HTTPHeader(name: "X-CSRF-Token", value: token),
+            HTTPHeader(name: "Content-Type", value: "multipart/form-data")
         ]
-        request.httpBody = parameters.percentEncoded()
+        AF.upload(multipartFormData: { (multipartFormData) in
+            multipartFormData.append(uploadData,
+                                     withName: "image",
+                                     fileName: "m-\(UUID().uuidString).jpeg",
+                                     mimeType: "image/jpeg")
+            multipartFormData.append(Data(token.utf8), withName: "authenticity_token")
+        }, to: url, method: .post, headers: uploadHeaders).responseJSON { (response) in
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data,
-                let response = response as? HTTPURLResponse,
-                error == nil else {
-                print("error", error ?? "Unknown error")
+            guard let statusCode = response.response?.statusCode else {
+                completion(nil, nil)
                 return
             }
 
-            guard (200 ... 299) ~= response.statusCode else {
-                print("statusCode should be 2xx, but is \(response.statusCode)")
-                print("response = \(response)")
-                return
+            if statusCode == 200, let result = response.value as? [String: [String]] {
+                let links = result["links"] as [String]?
+                completion(links?.first, nil)
+            } else if let result = response.value as? [String: String] {
+                completion(nil, result["error"])
+            } else {
+                completion(nil, nil)
             }
-
-            let responseString = String(data: data, encoding: .utf8)
-            print("responseString = \(responseString)")
         }
-
-        task.resume()
     }
 }

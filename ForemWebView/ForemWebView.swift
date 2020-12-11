@@ -211,7 +211,7 @@ open class ForemWebView: WKWebView {
     }
 
     // Helper function to wrap JS errors in a way we don't pollute the JS Context with Mobile specific errors
-    internal func wrappedJS(_ javascript: String) -> String {
+    func wrappedJS(_ javascript: String) -> String {
         // TODO: Consider using Honeybadger/Datadog/Ahoy/etc for these error handlers (JS side)
         return "try { \(javascript) } catch (err) { console.log(err) }"
     }

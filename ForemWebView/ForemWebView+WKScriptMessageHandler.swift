@@ -67,36 +67,51 @@ extension ForemWebView: WKScriptMessageHandler {
         }
     }
 
-    private func handleImagePicker(_ message: [String: String]) {
-        fetchCSRF { (res) in
-            print("RES: \(res)")
-            print("RES")
-        }
-        
+    // MARK: - Image Uploads
+
+    func handleImagePicker(_ message: [String: String]) {
         // TODO: Consider possible scenarios where the guard fails
-        guard let elementId = message["id"] else { return }
-        
+        guard let targetElementId = message["id"] else { return }
+
         let picker = YPImagePicker()
         picker.didFinishPicking { [unowned picker] items, _ in
             if let photo = items.singlePhoto {
-                print(photo.fromCamera) // Image source (camera or library)
-                print(photo.image) // Final image selected by the user
-                print(photo.originalImage) // original image selected by the user, unfiltered
-                print(photo.modifiedImage) // Transformed image, can be nil
-                print(photo.exifMeta) // Print exif meta data of original image.
-//                print(photo.exifMeta["Orientation"])
-                self.injectImageForUpload(elementId: elementId, image: photo.image)
+                let message = ["action": "uploading"]
+                self.injectImageMessage(message, targetElementId: targetElementId)
+                self.uploadImage(elementId: targetElementId, image: photo.image)
             }
             picker.dismiss(animated: true, completion: nil)
         }
 
         if let delegateViewController = foremWebViewDelegate as? UIViewController {
             delegateViewController.present(picker, animated: true, completion: nil)
-//            ps.showPreview(animate: true, sender: sender)
         }
     }
 
-    private func injectImageForUpload(elementId: String, image: UIImage) {
+    func injectImageMessage(_ message: [String: String], targetElementId: String) {
+        var jsonString = ""
+        let encoder = JSONEncoder()
+        if let jsonData = try? encoder.encode(message) {
+            jsonString = String(data: jsonData, encoding: .utf8) ?? ""
+        }
+
+        // React doesn't trigger `onChange` when updating the value of inputs
+        // programmatically, so we are forced to dispatch the event manually
+        let javascript = """
+                            let element = document.getElementById('\(targetElementId)');
+                            element.value = `\(jsonString)`;
+                            let changeEvent = new Event('change', { bubbles: true });
+                            element.dispatchEvent(changeEvent);
+                         """
+        evaluateJavaScript(wrappedJS(javascript)) { _, error in
+            guard error == nil else {
+                print(error.debugDescription)
+                return
+            }
+        }
+    }
+
+    func uploadImage(elementId: String, image: UIImage) {
         // If the image has a large dimension make sure we resize
         var imageSize = image.size
         if image.size.width > 1000 {
@@ -108,32 +123,25 @@ extension ForemWebView: WKScriptMessageHandler {
         }
 
         if let token = csrfToken, let domain = self.foremInstance?.domain {
-            let uploadUrl = "https://\(domain)/image_uploads"
-            image.imageResized(to: imageSize).uploadToForem(uploadUrl: uploadUrl, token: token) { (result) in
-                if let result = result {
-                    print("AWWWW YEAHHH: \(result)")
+            // Support the simulator
+            let requestProtocol = domain == "localhost" ? "http://" : "https://"
+            let uploadUrl = "\(requestProtocol)\(domain)/image_uploads"
+
+            image.imageResized(to: imageSize).uploadToForem(uploadUrl: uploadUrl, token: token) { (success, error) in
+                if let result = success as String? {
+                    var message = ["action": "success", "link": result]
+                    if !result.contains(requestProtocol) {
+                        message["link"] = "\(requestProtocol)\(domain)\(result)"
+                    }
+                    self.injectImageMessage(message, targetElementId: elementId)
                 } else {
-                    print("AWWWW NNOOOAAAAHH")
+                    let message = ["action": "error", "error": error ?? "Unexpected error"]
+                    self.injectImageMessage(message, targetElementId: elementId)
                 }
             }
         } else {
-            print("ERROROROROOROR")
+            let message = ["action": "error", "message": "Unexpected error"]
+            self.injectImageMessage(message, targetElementId: elementId)
         }
-
-//        guard let imageData = image.imageResized(to: imageSize).pngData() else { return }
-//        let base64Data = "img-src data:image/png;base64, \(imageData.base64EncodedString())"
-//        let javascript = """
-//                            let element = document.getElementById('\(elementId)');
-//                            element.value = '\(base64Data)';
-//                            let changeEvent = new Event('change', { bubbles: true });
-//                            element.dispatchEvent(changeEvent);
-//                         """
-//
-//        evaluateJavaScript(wrappedJS(javascript)) { _, error in
-//            guard error == nil else {
-//                print("Error closing Podcast: \(String(describing: error))")
-//                return
-//            }
-//        }
     }
 }
