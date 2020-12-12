@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.foremWebViewDelegate = self
+//        webView.load("http://localhost:3000")
         webView.load("https://dev.to")
         activityIndicator.startAnimating()
 

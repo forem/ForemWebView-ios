@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import AlamofireImage
 import YPImagePicker
 
 enum BridgeMessageType {
@@ -69,11 +70,20 @@ extension ForemWebView: WKScriptMessageHandler {
 
     // MARK: - Image Uploads
 
+    func imagePicker() -> YPImagePicker {
+        var config = YPImagePickerConfiguration()
+        config.shouldSaveNewPicturesToAlbum = false
+        config.startOnScreen = YPPickerScreen.library
+        config.library.onlySquare = false
+        config.library.isSquareByDefault = false
+        config.library.mediaType = YPlibraryMediaType.photo
+        return YPImagePicker(configuration: config)
+    }
+
     func handleImagePicker(_ message: [String: String]) {
-        // TODO: Consider possible scenarios where the guard fails
         guard let targetElementId = message["id"] else { return }
 
-        let picker = YPImagePicker()
+        let picker = imagePicker()
         picker.didFinishPicking { [unowned picker] items, _ in
             if let photo = items.singlePhoto {
                 let message = ["action": "uploading"]
@@ -112,36 +122,28 @@ extension ForemWebView: WKScriptMessageHandler {
     }
 
     func uploadImage(elementId: String, image: UIImage) {
-        // If the image has a large dimension make sure we resize
-        var imageSize = image.size
-        if image.size.width > 1000 {
-            let ratio = 1000.0 / image.size.width
-            imageSize = CGSize(width: ratio * imageSize.width, height: ratio * imageSize.height)
-        } else if image.size.height > 1000 {
-            let ratio = 1000.0 / image.size.height
-            imageSize = CGSize(width: ratio * imageSize.width, height: ratio * imageSize.height)
-        }
-
-        if let token = csrfToken, let domain = self.foremInstance?.domain {
-            // Support the simulator
-            let requestProtocol = domain == "localhost" ? "http://" : "https://"
-            let uploadUrl = "\(requestProtocol)\(domain)/image_uploads"
-
-            image.imageResized(to: imageSize).uploadToForem(uploadUrl: uploadUrl, token: token) { (success, error) in
-                if let result = success as String? {
-                    var message = ["action": "success", "link": result]
-                    if !result.contains(requestProtocol) {
-                        message["link"] = "\(requestProtocol)\(domain)\(result)"
-                    }
-                    self.injectImageMessage(message, targetElementId: elementId)
-                } else {
-                    let message = ["action": "error", "error": error ?? "Unexpected error"]
-                    self.injectImageMessage(message, targetElementId: elementId)
-                }
-            }
-        } else {
+        guard let token = csrfToken, let domain = self.foremInstance?.domain else {
             let message = ["action": "error", "message": "Unexpected error"]
             self.injectImageMessage(message, targetElementId: elementId)
+            return
+        }
+
+        // Support the simulator
+        let requestProtocol = domain == "localhost:3000" ? "http://" : "https://"
+        let targetUrl = "\(requestProtocol)\(domain)/image_uploads"
+
+        let optimizedImage = image.af.imageScaled(to: image.foremLimitedSize())
+        optimizedImage.uploadTo(url: targetUrl, token: token) { (link, error) in
+            if let link = link as String? {
+                var message = ["action": "success", "link": link]
+                if !link.contains(requestProtocol) {
+                    message["link"] = "\(requestProtocol)\(domain)\(link)"
+                }
+                self.injectImageMessage(message, targetElementId: elementId)
+            } else {
+                let message = ["action": "error", "error": error ?? "Unexpected error"]
+                self.injectImageMessage(message, targetElementId: elementId)
+            }
         }
     }
 }

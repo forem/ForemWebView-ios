@@ -9,17 +9,35 @@ import UIKit
 import Alamofire
 
 extension UIImage {
-    func imageResized(to size: CGSize) -> UIImage {
-        return UIGraphicsImageRenderer(size: size).image { _ in
-            draw(in: CGRect(origin: .zero, size: size))
+
+    // This function calculates the size of the image that will be uploaded (downsized if it exceeds the limit).
+    // If either width or height are larger than the `sideLimit` the returned size will be downscaled proportionally.
+    // Examples:
+    // - (downsizeTarget = 1000): 3000x3000 -> 1000x1000, 2000x1000 -> 1000x500, ...
+    // - (downsizeTarget = 500): 3000x3000 -> 500x500, 2000x1000 -> 500x250, ...
+    func foremLimitedSize() -> CGSize {
+        let sideLimit: CGFloat = 1000.0
+        var ratio: CGFloat = 1.0
+
+        if size.width > sideLimit {
+            ratio = sideLimit / size.width
+        } else if size.height > sideLimit {
+            ratio = sideLimit / size.height
         }
+
+        if ratio < 1.0 {
+            return CGSize(width: floor(ratio * size.width), height: floor(ratio * size.height))
+        }
+
+        // The image is already appropriately sized
+        return size
     }
 
     // This function will upload the UIImage to a Forem directly and will use a completion callback.
     // The first param in the callback will provide the uploaded image URL on success and the second
     // param will contain an error message if the upload was unsuccessful
-    func uploadToForem(uploadUrl: String, token: String, completion: @escaping (String?, String?) -> Void) {
-        guard let url = URL(string: uploadUrl), let uploadData = jpegData(compressionQuality: 0.9) else {
+    func uploadTo(url: String, token: String, completion: @escaping (String?, String?) -> Void) {
+        guard let url = URL(string: url), let uploadData = jpegData(compressionQuality: 0.9) else {
             completion(nil, nil)
             return
         }
@@ -46,6 +64,8 @@ extension UIImage {
                 completion(links?.first, nil)
             } else if let result = response.value as? [String: String] {
                 completion(nil, result["error"])
+            } else if let error = response.error {
+                completion(nil, error.localizedDescription)
             } else {
                 completion(nil, nil)
             }

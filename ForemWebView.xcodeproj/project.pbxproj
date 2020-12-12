@@ -24,6 +24,7 @@
 		DC3DAE9725229FD2004DAC13 /* forem.dev-logged-in.html in Resources */ = {isa = PBXBuildFile; fileRef = DC3DAE9525229FD2004DAC13 /* forem.dev-logged-in.html */; };
 		DC6576432559CCDD00B5B46F /* ForemMediaManager+PodcastActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6576422559CCDC00B5B46F /* ForemMediaManager+PodcastActions.swift */; };
 		DC6576472559CCED00B5B46F /* ForemMediaManager+VideoActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6576462559CCED00B5B46F /* ForemMediaManager+VideoActions.swift */; };
+		DC8AC9FF25850EF00012DFAC /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = DC8AC9FE25850EF00012DFAC /* AlamofireImage */; };
 		DC9C221A2581824B00B0F801 /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = DC9C22192581824B00B0F801 /* YPImagePicker */; };
 		DC9EF35D2549E013003A1BE7 /* ForemUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9EF35C2549E013003A1BE7 /* ForemUserData.swift */; };
 		DC9EF3612549FDD5003A1BE7 /* invertedImages.css in Resources */ = {isa = PBXBuildFile; fileRef = DC9EF3602549FDD5003A1BE7 /* invertedImages.css */; };
@@ -114,6 +115,7 @@
 			files = (
 				DC9C221A2581824B00B0F801 /* YPImagePicker in Frameworks */,
 				DCA40E772583C45E00D463DC /* Alamofire in Frameworks */,
+				DC8AC9FF25850EF00012DFAC /* AlamofireImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +263,7 @@
 			packageProductDependencies = (
 				DC9C22192581824B00B0F801 /* YPImagePicker */,
 				DCA40E762583C45E00D463DC /* Alamofire */,
+				DC8AC9FE25850EF00012DFAC /* AlamofireImage */,
 			);
 			productName = ForemWebView;
 			productReference = DC3DAE3425229D8C004DAC13 /* ForemWebView.framework */;
@@ -337,6 +340,7 @@
 			packageReferences = (
 				DC9C22182581824B00B0F801 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
 				DCA40E752583C45D00D463DC /* XCRemoteSwiftPackageReference "Alamofire" */,
+				DC8AC9FD25850EF00012DFAC /* XCRemoteSwiftPackageReference "AlamofireImage" */,
 			);
 			productRefGroup = DC3DAE3525229D8C004DAC13 /* Products */;
 			projectDirPath = "";
@@ -778,6 +782,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		DC8AC9FD25850EF00012DFAC /* XCRemoteSwiftPackageReference "AlamofireImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/AlamofireImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.1.0;
+			};
+		};
 		DC9C22182581824B00B0F801 /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Yummypets/YPImagePicker";
@@ -797,6 +809,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		DC8AC9FE25850EF00012DFAC /* AlamofireImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DC8AC9FD25850EF00012DFAC /* XCRemoteSwiftPackageReference "AlamofireImage" */;
+			productName = AlamofireImage;
+		};
 		DC9C22192581824B00B0F801 /* YPImagePicker */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DC9C22182581824B00B0F801 /* XCRemoteSwiftPackageReference "YPImagePicker" */;

@@ -131,6 +131,7 @@ open class ForemWebView: WKWebView {
 
     // MARK: - Non-open functions
 
+    // Function that fetches the CSRF Token required for direct interaction with the Forem servers
     func fetchCSRF(completion: @escaping (String?) -> Void) {
         evaluateJavaScript(wrappedJS("window.csrfToken")) { result, error in
             if let error = error {
@@ -145,10 +146,14 @@ open class ForemWebView: WKWebView {
     // Function that will update the observable userData variable by reusing `fetchUserData`
     func updateUserData() {
         self.fetchUserData { (userData) in
+            // This fetch will be executed whenever changes in the DOM trigger a `updateUserData` so we
+            // dont override `self.userData` on every call, only when it changes. This allows the
+            // consumers of the framework to tap into observing `self.userData` and expect changes when the
+            // data has actually changed (nil -> 'something' means user logged-in, the opposite for logged-out)
             if self.userData != userData {
                 self.userData = userData
-                self.fetchCSRF { (result) in
-                    self.csrfToken = result
+                self.fetchCSRF { (token) in
+                    self.csrfToken = token
                 }
             }
         }
