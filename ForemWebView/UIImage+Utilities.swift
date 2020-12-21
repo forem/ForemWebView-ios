@@ -19,7 +19,7 @@ extension UIImage {
         let sideLimit: CGFloat = 1000.0
         var ratio: CGFloat = 1.0
 
-        if size.width > sideLimit {
+        if size.width > size.height && size.width > sideLimit {
             ratio = sideLimit / size.width
         } else if size.height > sideLimit {
             ratio = sideLimit / size.height
