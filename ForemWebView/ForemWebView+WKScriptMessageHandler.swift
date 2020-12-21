@@ -70,6 +70,7 @@ extension ForemWebView: WKScriptMessageHandler {
 
     // MARK: - Image Uploads
 
+    // Builds, configures and returns an YPImagePicker
     func imagePicker() -> YPImagePicker {
         var config = YPImagePickerConfiguration()
         config.shouldSaveNewPicturesToAlbum = false
@@ -80,12 +81,15 @@ extension ForemWebView: WKScriptMessageHandler {
         return YPImagePicker(configuration: config)
     }
 
+    // Whenever a request to select an image is triggered via WKScriptMessageHandler
     func handleImagePicker(_ message: [String: String]) {
         guard let targetElementId = message["id"] else { return }
 
         let picker = imagePicker()
         picker.didFinishPicking { [unowned picker] items, _ in
+            // Callback for when the native image picker process is completed by the user
             if let photo = items.singlePhoto {
+                // Image selected now start uploading process
                 let message = ["action": "uploading"]
                 self.injectImageMessage(message, targetElementId: targetElementId)
                 self.uploadImage(elementId: targetElementId, image: photo.image)
@@ -93,11 +97,13 @@ extension ForemWebView: WKScriptMessageHandler {
             picker.dismiss(animated: true, completion: nil)
         }
 
+        // Use 'foremWebViewDelegate' as the 'pivot' ViewController to present the native picker
         if let delegateViewController = foremWebViewDelegate as? UIViewController {
             delegateViewController.present(picker, animated: true, completion: nil)
         }
     }
 
+    // This function will inject a message back into the image selector that triggered the request
     func injectImageMessage(_ message: [String: String], targetElementId: String) {
         var jsonString = ""
         let encoder = JSONEncoder()
@@ -121,6 +127,7 @@ extension ForemWebView: WKScriptMessageHandler {
         }
     }
 
+    // Function that will upload a UIImage directly to the Forem instance
     func uploadImage(elementId: String, image: UIImage) {
         guard let token = csrfToken, let domain = self.foremInstance?.domain else {
             let message = ["action": "error", "message": "Unexpected error"]
