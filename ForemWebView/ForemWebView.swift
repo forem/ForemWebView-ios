@@ -24,6 +24,7 @@ open class ForemWebView: WKWebView {
 
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
+    open var csrfToken: String?
 
     @objc open dynamic var userData: ForemUserData?
 
@@ -61,6 +62,7 @@ open class ForemWebView: WKWebView {
         configuration.userContentController.add(self, name: "haptic")
         configuration.userContentController.add(self, name: "body")
         configuration.userContentController.add(self, name: "podcast")
+        configuration.userContentController.add(self, name: "imageUpload")
         if AVPictureInPictureController.isPictureInPictureSupported() {
             configuration.userContentController.add(self, name: "video")
         }
@@ -129,11 +131,30 @@ open class ForemWebView: WKWebView {
 
     // MARK: - Non-open functions
 
+    // Function that fetches the CSRF Token required for direct interaction with the Forem servers
+    func fetchCSRF(completion: @escaping (String?) -> Void) {
+        evaluateJavaScript(wrappedJS("window.csrfToken")) { result, error in
+            if let error = error {
+                print("Unable to fetch CSRF Token: \(error.localizedDescription)")
+                completion(nil)
+            } else {
+                completion(result as? String ?? nil)
+            }
+        }
+    }
+
     // Function that will update the observable userData variable by reusing `fetchUserData`
     func updateUserData() {
         self.fetchUserData { (userData) in
+            // This fetch will be executed whenever changes in the DOM trigger a `updateUserData` so we
+            // dont override `self.userData` on every call, only when it changes. This allows the
+            // consumers of the framework to tap into observing `self.userData` and expect changes when the
+            // data has actually changed (nil -> 'something' means user logged-in, the opposite for logged-out)
             if self.userData != userData {
                 self.userData = userData
+                self.fetchCSRF { (token) in
+                    self.csrfToken = token
+                }
             }
         }
     }
@@ -195,7 +216,7 @@ open class ForemWebView: WKWebView {
     }
 
     // Helper function to wrap JS errors in a way we don't pollute the JS Context with Mobile specific errors
-    internal func wrappedJS(_ javascript: String) -> String {
+    func wrappedJS(_ javascript: String) -> String {
         // TODO: Consider using Honeybadger/Datadog/Ahoy/etc for these error handlers (JS side)
         return "try { \(javascript) } catch (err) { console.log(err) }"
     }

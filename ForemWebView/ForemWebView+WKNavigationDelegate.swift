@@ -27,17 +27,23 @@ extension ForemWebView: WKNavigationDelegate {
 
     // MARK: - Action Policy
     func navigationPolicy(url: URL, navigationType: WKNavigationType) -> WKNavigationActionPolicy {
-        if foremInstance == nil {
+        guard let foremInstance = foremInstance else {
             // First load there will be no Instance Metadata available
             return .allow
-        } else if url.scheme == "mailto" {
-            foremWebViewDelegate?.requestedExternalSite(url: url)
+        }
+
+        if url.scheme == "mailto" {
+            foremWebViewDelegate?.requestedMailto(url: url)
             return .cancel
         } else if url.absoluteString == "about:blank" {
             return .allow
         } else if isOAuthUrl(url) {
             return .allow
-        } else if url.host != foremInstance?.domain && navigationType.rawValue == 0 {
+        }
+
+        // localhost gives simulator support with a local server running
+        let isExternalDomain = (url.host != foremInstance.domain) && (url.host != "localhost")
+        if isExternalDomain && navigationType == .linkActivated {
             foremWebViewDelegate?.requestedExternalSite(url: url)
             return .cancel
         } else {
