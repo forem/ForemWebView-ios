@@ -8,13 +8,13 @@ The Project supports iOS 13.x but features like Picture in Picture are only avai
 
 ## Installation
 
-The Swift Package Manager is a tool for automating the distribution of Swift code and is integrated into the swift compiler. It is in early development, but Alamofire does support its use on supported platforms.
+The Swift Package Manager is a tool for automating the distribution of Swift code and is integrated into the swift compiler. Once you have your Swift package set up, adding ForemWebView as a dependency is as easy as adding it to the dependencies value of your Package.swift.
 
-Once you have your Swift package set up, adding ForemWebView as a dependency is as easy as adding it to the dependencies value of your Package.swift.
-
+```swift
 dependencies: [
     .package(url: "https://github.com/forem/ForemWebView-ios.git", .upToNextMajor(from: "1.0.0"))
 ]
+```
 
 #### Carthage & CocoaPods
 
@@ -31,11 +31,6 @@ Initialize the ForemWebView from Storyboard, programmatically, or however you pr
 
 #### The suggested approach to tap into the ForemWebView is:
 1. Implement `ForemWebViewDelegate`
-   - `func willStartNativeVideo(playerController: AVPlayerViewController)`
-   - `func requestedExternalSite(url: URL)`
-   - `func requestedMailto(url: URL)`
-   - `func didStartNavigation()`
-   - `func didFinishNavigation()`
 1. Observe changes in the view's variables:
    - `userData` variable will be updated when a user logs in/out (`ForemUserData` or `nil` if unauthenticated)
    - `estimatedProgress`, `canGoBack`, `canGoForward`, `url`, and any other WKWebView variable for state updates
@@ -50,13 +45,13 @@ Initialize the ForemWebView from Storyboard, programmatically, or however you pr
 - `isOAuthUrl(_ url: URL) -> Bool`
    - Responds to whether the url provided is one of the supported 3rd party redirect URLs in a OAuth protocol
    - Useful if implementing `WKNavigationDelegate` on your own (not recommended)
-- `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
-   - Async callback to request the `ForemUserData` struct from the current state of the DOM
-   - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes as they become available
 - `userData`
    - Instance of `ForemUserData` when authenticated or `nil` otherwise
 - `foremInstance`
-   - `ForemInstanceMetadata` struct that represents the Forem Instance loaded. It will be `nil`until the first page load
+  - `ForemInstanceMetadata` struct that represents the Forem Instance loaded. It will be `nil`until the first page load
+- `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
+  - Async callback to request the `ForemUserData` struct from the current state of the DOM
+  - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes when they become available
 
 ## Native Podcast Player & Picture in Picture video
 
@@ -85,7 +80,8 @@ For Pull Requests:
 The tests are run using the Example app bundled in the project. You can use XCode to run the test suite or from a Terminal with the following command:
 
 ```bash
-swift test
+# Make sure the `destination` param is using an iOS/Simulator available in your local environment
+set -o pipefail && xcodebuild -scheme ForemWebView -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=14.2,name=iPhone 12 Pro Max' test | xcpretty
 ```
 
 ## License
