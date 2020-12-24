@@ -1,4 +1,4 @@
-# ForemWebView - iOS/macOS
+# ForemWebView - iOS
 
 This is the WKWebView customization that powers the Forem (coming soon) and [DEV](https://github.com/thepracticaldev/DEV-ios) mobile apps.
 
@@ -8,17 +8,17 @@ The Project supports iOS 13.x but features like Picture in Picture are only avai
 
 ## Installation
 
-[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks. To integrate ForemWebView into your Xcode project using Carthage, specify it in your Cartfile:
+The Swift Package Manager is a tool for automating the distribution of Swift code and is integrated into the swift compiler. Once you have your Swift package set up, adding ForemWebView as a dependency is as easy as adding it to the dependencies value of your Package.swift.
 
+```swift
+dependencies: [
+    .package(url: "https://github.com/forem/ForemWebView-ios.git", .upToNextMajor(from: "1.0.0"))
+]
 ```
-github "forem/ForemWebView-ios" ~> 0.2
-```
 
-Then use [the recommended steps to include the framework in your project](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
+#### Carthage & CocoaPods
 
-#### Swift Package Manager & CocoaPods
-
-Not yet supported. If interested in contributing, PRs for these are welcome!
+We've moved to supporting SPM and not Carthage or CocoaPods. If interested in contributing, PRs to support these are welcome!
 
 ## Usage
 
@@ -31,11 +31,6 @@ Initialize the ForemWebView from Storyboard, programmatically, or however you pr
 
 #### The suggested approach to tap into the ForemWebView is:
 1. Implement `ForemWebViewDelegate`
-   - `func willStartNativeVideo(playerController: AVPlayerViewController)`
-   - `func requestedExternalSite(url: URL)`
-   - `func requestedMailto(url: URL)`
-   - `func didStartNavigation()`
-   - `func didFinishNavigation()`
 1. Observe changes in the view's variables:
    - `userData` variable will be updated when a user logs in/out (`ForemUserData` or `nil` if unauthenticated)
    - `estimatedProgress`, `canGoBack`, `canGoForward`, `url`, and any other WKWebView variable for state updates
@@ -50,13 +45,13 @@ Initialize the ForemWebView from Storyboard, programmatically, or however you pr
 - `isOAuthUrl(_ url: URL) -> Bool`
    - Responds to whether the url provided is one of the supported 3rd party redirect URLs in a OAuth protocol
    - Useful if implementing `WKNavigationDelegate` on your own (not recommended)
-- `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
-   - Async callback to request the `ForemUserData` struct from the current state of the DOM
-   - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes as they become available
 - `userData`
    - Instance of `ForemUserData` when authenticated or `nil` otherwise
 - `foremInstance`
-   - `ForemInstanceMetadata` struct that represents the Forem Instance loaded. It will be `nil`until the first page load
+  - `ForemInstanceMetadata` struct that represents the Forem Instance loaded. It will be `nil`until the first page load
+- `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
+  - Async callback to request the `ForemUserData` struct from the current state of the DOM
+  - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes when they become available
 
 ## Native Podcast Player & Picture in Picture video
 
@@ -86,7 +81,7 @@ The tests are run using the Example app bundled in the project. You can use XCod
 
 ```bash
 # Make sure the `destination` param is using an iOS/Simulator available in your local environment
-set -o pipefail && xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=14.1,name=iPhone 12 Pro Max' test | xcpretty
+set -o pipefail && xcodebuild -scheme ForemWebView -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=14.2,name=iPhone 12 Pro Max' test | xcpretty
 ```
 
 ## License

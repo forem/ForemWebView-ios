@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@master
       - name: Build and test
         run: |
-          set -o pipefail && xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination "${destination}" test | xcpretty
+          set -o pipefail && xcodebuild -scheme ForemWebView -sdk iphonesimulator -destination "${destination}" test | xcpretty
         env:
          DEVELOPER_DIR: /Applications/Xcode_12.1.app/Contents/Developer
          destination: ${{ matrix.destination }}
