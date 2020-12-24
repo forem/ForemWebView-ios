@@ -1,4 +1,4 @@
-# ForemWebView - iOS/macOS
+# ForemWebView - iOS
 
 This is the WKWebView customization that powers the Forem (coming soon) and [DEV](https://github.com/thepracticaldev/DEV-ios) mobile apps.
 
@@ -10,15 +10,15 @@ The Project supports iOS 13.x but features like Picture in Picture are only avai
 
 The Swift Package Manager is a tool for automating the distribution of Swift code and is integrated into the swift compiler. It is in early development, but Alamofire does support its use on supported platforms.
 
-Once you have your Swift package set up, adding Alamofire as a dependency is as easy as adding it to the dependencies value of your Package.swift.
+Once you have your Swift package set up, adding ForemWebView as a dependency is as easy as adding it to the dependencies value of your Package.swift.
 
 dependencies: [
-    .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.2.0"))
+    .package(url: "https://github.com/forem/ForemWebView-ios.git", .upToNextMajor(from: "1.0.0"))
 ]
 
-#### Swift Package Manager & CocoaPods
+#### Carthage & CocoaPods
 
-Not yet supported. If interested in contributing, PRs for these are welcome!
+We've moved to supporting SPM and not Carthage or CocoaPods. If interested in contributing, PRs to support these are welcome!
 
 ## Usage
 
@@ -85,8 +85,7 @@ For Pull Requests:
 The tests are run using the Example app bundled in the project. You can use XCode to run the test suite or from a Terminal with the following command:
 
 ```bash
-# Make sure the `destination` param is using an iOS/Simulator available in your local environment
-set -o pipefail && xcodebuild -project ForemWebView.xcodeproj -scheme Example -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=14.1,name=iPhone 12 Pro Max' test | xcpretty
+swift test
 ```
 
 ## License

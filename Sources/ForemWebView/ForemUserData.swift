@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 @objc public class ForemUserData: NSObject, Codable {
@@ -36,3 +38,5 @@ import Foundation
         return (lfi.userID == rfi.userID) && (lfi.configBodyClass == rfi.configBodyClass)
     }
 }
+
+#endif

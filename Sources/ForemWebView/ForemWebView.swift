@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import UIKit
 import WebKit
 import AVKit
@@ -106,8 +108,8 @@ open class ForemWebView: WKWebView {
     // regarding the currently logged in user. It will return `nil` if this data isn't available
     open func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
         var javascript = ""
-        if let filePath = Bundle(for: type(of: self)).path(forResource: "fetchUserData", ofType: "js"),
-           let fileContents = try? String(contentsOfFile: filePath) {
+        if let fileURL = Bundle.module.url(forResource: "fetchUserData", withExtension: "js"),
+           let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
             javascript = fileContents
         }
 
@@ -163,8 +165,8 @@ open class ForemWebView: WKWebView {
     // attribute updates via a WebKit messageHandler (named `body`). See contents of `bodyMutationObserver.js`
     func ensureMutationObserver() {
         var javascript = ""
-        if let filePath = Bundle(for: type(of: self)).path(forResource: "bodyMutationObserver", ofType: "js"),
-           let fileContents = try? String(contentsOfFile: filePath) {
+        if let fileURL = Bundle.module.url(forResource: "bodyMutationObserver", withExtension: "js"),
+           let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
             javascript = fileContents
         }
 
@@ -184,8 +186,8 @@ open class ForemWebView: WKWebView {
         guard foremInstance == nil else { return }
 
         var javascript = ""
-        if let filePath = Bundle(for: type(of: self)).path(forResource: "fetchForemInstanceMetadata", ofType: "js"),
-           let fileContents = try? String(contentsOfFile: filePath) {
+        if let fileURL = Bundle.module.url(forResource: "fetchForemInstanceMetadata", withExtension: "js"),
+           let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
             javascript = fileContents
         }
 
@@ -221,3 +223,5 @@ open class ForemWebView: WKWebView {
         return "try { \(javascript) } catch (err) { console.log(err) }"
     }
 }
+
+#endif

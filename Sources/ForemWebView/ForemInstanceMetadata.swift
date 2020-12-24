@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public struct ForemInstanceMetadata: Codable {
@@ -5,3 +7,5 @@ public struct ForemInstanceMetadata: Codable {
     public var logo: String
     public var domain: String
 }
+
+#endif

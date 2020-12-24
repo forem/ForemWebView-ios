@@ -1,9 +1,4 @@
-//
-//  UIImage+Resize.swift
-//  ForemWebView
-//
-//  Created by Fernando Valverde on 12/10/20.
-//
+#if os(iOS)
 
 import UIKit
 import Alamofire
@@ -72,3 +67,5 @@ extension UIImage {
         }
     }
 }
+
+#endif

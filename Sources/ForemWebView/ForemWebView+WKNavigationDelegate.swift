@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import WebKit
 
 extension ForemWebView: WKNavigationDelegate {
@@ -51,3 +53,5 @@ extension ForemWebView: WKNavigationDelegate {
         }
     }
 }
+
+#endif

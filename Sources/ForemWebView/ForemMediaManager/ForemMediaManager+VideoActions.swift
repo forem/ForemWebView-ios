@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import AVKit
 
 extension ForemMediaManager {
@@ -56,3 +58,5 @@ extension ForemMediaManager {
         return avPlayerControllerReference!
     }
 }
+
+#endif

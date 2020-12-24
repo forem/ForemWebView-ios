@@ -1,44 +1,55 @@
 import XCTest
-import WebKit
-import ForemWebView
-@testable import Example
+@testable import ForemWebView
 
-class ExampleTests: XCTestCase {
-
-    var viewController: ViewController!
-
+final class ForemWebViewTests: XCTestCase {
     // These values need to be tuned for CI performance. Keep in mind that locally you may be
     // running on better specs than CI will be using to run these, that's the reason behind them
     // being large (forgiving). It would be good to find a way to avoid having to do the async dispatches
     let asyncAfter = 4.0
     let timeout = 15.0
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        viewController = mainStoryboard.instantiateInitialViewController() as? ViewController
-        viewController?.webView?.load("forem.dev.html")
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testCustomUserAgent() throws {
-        _ = viewController.view
+    
+    let loggedOutHTML: String = {
+        let fileURL = Bundle.module.url(forResource: "forem.dev", withExtension: "html")!
+        return try! String(contentsOf: fileURL.absoluteURL)
+    }()
+    let loggedInHTML: String = {
+        let fileURL = Bundle.module.url(forResource: "logged-in-forem.dev", withExtension: "html")!
+        return try! String(contentsOf: fileURL.absoluteURL)
+    }()
+    let loggedInHTMLPink: String = {
+        let fileURL = Bundle.module.url(forResource: "pink-logged-in-forem.dev", withExtension: "html")!
+        return try! String(contentsOf: fileURL.absoluteURL)
+    }()
+    let loggedInHTMLDark: String = {
+        let fileURL = Bundle.module.url(forResource: "dark-logged-in-forem.dev", withExtension: "html")!
+        return try! String(contentsOf: fileURL.absoluteURL)
+    }()
+    
+    static var allTests = [
+        ("testCustomUserAgent", testCustomUserAgent),
+        ("testAuthURLs", testAuthURLs),
+        ("testUserDataIsNilWhenLoggedOut", testUserDataIsNilWhenLoggedOut),
+        ("testExtractsUserDataWithDefaultTheme", testExtractsUserDataWithDefaultTheme),
+        ("testExtractsUserDataWithPinkTheme", testExtractsUserDataWithPinkTheme),
+        ("testExtractsUserDataWithNightTheme", testExtractsUserDataWithNightTheme),
+    ]
+    
+    func testCustomUserAgent() {
+        let webView = ForemWebView()
+        webView.loadHTMLString(loggedOutHTML, baseURL: nil)
+        
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
-            let userAgentCheck = self.viewController?.webView?.customUserAgent?.contains("ForemWebView")
+            let userAgentCheck = webView.customUserAgent?.contains("ForemWebView")
             XCTAssertTrue(userAgentCheck ?? false, "The UserAgent contains 'ForemWebView' for metrics")
             promise.fulfill()
         }
         wait(for: [promise], timeout: timeout)
     }
-
-    func testAuthUrlCheck() throws {
-        _ = viewController.view
-        guard let webView = self.viewController?.webView else { return }
+    
+    func testAuthURLs() {
+        let webView = ForemWebView()
 
         let urlStrings = [
             "https://github.com/login",
@@ -68,14 +79,11 @@ class ExampleTests: XCTestCase {
             }
         }
     }
+    
+    func testUserDataIsNilWhenLoggedOut() {
+        let webView = ForemWebView()
+        webView.loadHTMLString(loggedOutHTML, baseURL: nil)
 
-    func testUserDataIsNilWhenLoggedOut() throws {
-        _ = viewController.view
-        guard let webView = self.viewController?.webView else { return }
-        let bundle = Bundle(for: type(of: self))
-        let html = try String(contentsOfFile: bundle.path(forResource: "forem.dev", ofType: "html")!)
-
-        webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "UserData is nil when unauthenticated")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
@@ -88,13 +96,10 @@ class ExampleTests: XCTestCase {
         wait(for: [promise], timeout: timeout)
     }
 
-    func testExtractsUserDataWithDefaultTheme() throws {
-        _ = viewController.view
-        guard let webView = self.viewController?.webView else { return }
-        let bundle = Bundle(for: type(of: self))
-        let html = try String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in", ofType: "html")!)
+    func testExtractsUserDataWithDefaultTheme() {
+        let webView = ForemWebView()
+        webView.loadHTMLString(loggedInHTML, baseURL: nil)
 
-        webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "UserData with default theme")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
@@ -107,13 +112,10 @@ class ExampleTests: XCTestCase {
         wait(for: [promise], timeout: timeout)
     }
 
-    func testExtractsUserDataWithPinkTheme() throws {
-        _ = viewController.view
-        guard let webView = self.viewController?.webView else { return }
-        let bundle = Bundle(for: type(of: self))
-        let html = try String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in-pink", ofType: "html")!)
+    func testExtractsUserDataWithPinkTheme() {
+        let webView = ForemWebView()
+        webView.loadHTMLString(loggedInHTMLPink, baseURL: nil)
 
-        webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "UserData with pink-theme")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
@@ -126,13 +128,10 @@ class ExampleTests: XCTestCase {
         wait(for: [promise], timeout: timeout)
     }
 
-    func testExtractsUserDataWithNightTheme() throws {
-        _ = viewController.view
-        guard let webView = self.viewController?.webView else { return }
-        let bundle = Bundle(for: type(of: self))
-        let html = try String(contentsOfFile: bundle.path(forResource: "forem.dev-logged-in-dark", ofType: "html")!)
+    func testExtractsUserDataWithNightTheme() {
+        let webView = ForemWebView()
+        webView.loadHTMLString(loggedInHTMLDark, baseURL: nil)
 
-        webView.loadHTMLString(html, baseURL: nil)
         let promise = expectation(description: "UserData with night-theme")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {

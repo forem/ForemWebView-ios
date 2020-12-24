@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import AVKit
 
@@ -110,3 +112,5 @@ extension ForemMediaManager {
         }
     }
 }
+
+#endif

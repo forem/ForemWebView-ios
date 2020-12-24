@@ -1,16 +1,16 @@
 // swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
-// swiftlint:disable all
 
 import PackageDescription
 
 let package = Package(
     name: "ForemWebView",
-    defaultLocalization: "en",
+    platforms: [.iOS(.v13), .macOS(.v10_12)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "ForemWebView",
+            type: .dynamic,
             targets: ["ForemWebView"]),
     ],
     dependencies: [
@@ -24,11 +24,15 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "ForemWebView",
-            dependencies: ["YPImagePicker", "Alamofire", "AlamofireImage"],
-            path: "Sources"),
+            dependencies: [
+                .product(name: "Alamofire", package: "Alamofire", condition: .when(platforms: [.iOS])),
+                .product(name: "AlamofireImage", package: "AlamofireImage", condition: .when(platforms: [.iOS])),
+                .product(name: "YPImagePicker", package: "YPImagePicker", condition: .when(platforms: [.iOS])),
+            ],
+            resources: [.process("JS+CSS")]),
         .testTarget(
             name: "ForemWebViewTests",
             dependencies: ["ForemWebView"],
-            path: "Tests"),
+            resources: [.process("Assets")])
     ]
 )

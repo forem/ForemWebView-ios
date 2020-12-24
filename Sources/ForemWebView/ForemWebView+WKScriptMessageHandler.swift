@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import UIKit
 import WebKit
 import AlamofireImage
@@ -154,3 +156,5 @@ extension ForemWebView: WKScriptMessageHandler {
         }
     }
 }
+
+#endif

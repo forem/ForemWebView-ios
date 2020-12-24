@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import MediaPlayer
 
 extension ForemMediaManager {
@@ -80,3 +82,5 @@ extension ForemMediaManager {
         }
     }
 }
+
+#endif

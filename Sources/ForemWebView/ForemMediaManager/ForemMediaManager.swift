@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import UIKit
 import AVKit
 import MediaPlayer
@@ -91,3 +93,5 @@ class ForemMediaManager: NSObject {
         }
     }
 }
+
+#endif
