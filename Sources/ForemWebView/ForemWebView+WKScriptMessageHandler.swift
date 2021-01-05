@@ -73,12 +73,15 @@ extension ForemWebView: WKScriptMessageHandler {
     // MARK: - Image Uploads
 
     // Builds, configures and returns an YPImagePicker
-    func imagePicker() -> YPImagePicker {
+    func imagePicker(_ ratio: String?) -> YPImagePicker {
         var config = YPImagePickerConfiguration()
         config.shouldSaveNewPicturesToAlbum = false
         config.startOnScreen = YPPickerScreen.library
         config.library.onlySquare = false
         config.library.isSquareByDefault = false
+        if let ratio = ratio, let rectangleRatio = Double(ratio) {
+            config.showsCrop = .rectangle(ratio: rectangleRatio)
+        }
         config.library.mediaType = YPlibraryMediaType.photo
         return YPImagePicker(configuration: config)
     }
@@ -87,7 +90,7 @@ extension ForemWebView: WKScriptMessageHandler {
     func handleImagePicker(_ message: [String: String]) {
         guard let targetElementId = message["id"] else { return }
 
-        let picker = imagePicker()
+        let picker = imagePicker(message["ratio"])
         picker.didFinishPicking { [unowned picker] items, _ in
             // Callback for when the native image picker process is completed by the user
             if let photo = items.singlePhoto {
