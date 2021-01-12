@@ -22,47 +22,15 @@ We've moved to supporting SPM and not Carthage or CocoaPods. If interested in co
 
 ## Usage
 
-Initialize the ForemWebView from Storyboard, programmatically, or however you prefer to do so. This custom `WKWebView` implementation will handle it's own `WKNavigationDelegate`, so instead of implementing this logic yourself please rely on the provided `ForemWebViewDelegate` for callbacks.
+After importing the framework into your project you can initialize the ForemWebView like you would any other WKWebView (Storyboard, programmatically, etc). This custom `WKWebView` implementation will handle it's own `WKNavigationDelegate`, so instead of implementing this logic yourself please rely on the provided `ForemWebViewDelegate` for callbacks.
+
+We have two *deep dive* documents:
+- [ForemWebView deep dive](/docs/ForemWebView-deep-dive.md) is a walkthrough of the capabilities available when you're using the Framework in your project
+- [Native Bridge deep dive](/docs/native-bridge-deep-dive.md) documents the native interface used to communicate between the Web (DOM + JS) and Swift contexts
 
 #### Important notes:
 - Using SwiftUI? [We would appreciate your feedback after trying out the framework](https://github.com/forem/ForemWebView-ios/issues/4).
 - If your project requires more detailed access to `WKNavigationDelegate` callbacks [please add a feature request](https://github.com/forem/ForemWebView-ios/issues/new?template=feature_request.md).
-- An example project is available in this repo showcasing a simple use-case.
-
-#### The suggested approach to tap into the ForemWebView is:
-1. Implement `ForemWebViewDelegate`
-1. Observe changes in the view's variables:
-   - `userData` variable will be updated when a user logs in/out (`ForemUserData` or `nil` if unauthenticated)
-   - `estimatedProgress`, `canGoBack`, `canGoForward`, `url`, and any other WKWebView variable for state updates
-1. Make sure the first URL to be loaded corresponds to a valid Forem Instance
-   - A `ForemWebViewError` will be raised if the first load was attempted on a invalid domain
-   - `load(_ urlString: String)` provided for simplicity (see below)
-
-#### The following helper functions/variables are available for use:
-
-- `load(_ urlString: String)`
-   - Helper method for simplicity: `webView.load("https://dev.to")`
-- `isOAuthUrl(_ url: URL) -> Bool`
-   - Responds to whether the url provided is one of the supported 3rd party redirect URLs in a OAuth protocol
-   - Useful if implementing `WKNavigationDelegate` on your own (not recommended)
-- `userData`
-   - Instance of `ForemUserData` when authenticated or `nil` otherwise
-- `foremInstance`
-  - `ForemInstanceMetadata` struct that represents the Forem Instance loaded. It will be `nil`until the first page load
-- `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
-  - Async callback to request the `ForemUserData` struct from the current state of the DOM
-  - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes when they become available
-
-## Native Podcast Player & Picture in Picture video
-
-In order for your App to take advantage of these native features via the `ForemWebView` you'll need two things:
-1. Make sure you enable `Audio, AirPlay, and Pciture in Picture` from the Background Mode capability in your Project's Target
-1. Configure the AVAudioSession category to `.playback`, preferrably in your AppDelegate. 
-   - A one liner that works for this is `try? AVAudioSession.sharedInstance().setCategory(.playback)` although handling the error will most likely prove helpful.
-1. The `ForemWebView` will call `.setActive(true)` on the `AVAudioSession` shared instance when playback is initiated, so you don't need to make this call yourself.
-1. The `ForemWebViewDelegate` will call `willStartNativeVideo` when the native video player is ready to start playing. It's your job to present this `AVPlayerViewController` (see Example in the project)
-
-The podcast player will automatically take advantage of [Background audio](https://developer.apple.com/documentation/avfoundation/media_playback_and_selection/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio) playback. If background playback is unavailable/unsupported the Podcast Player will still play the audio in your App in the foreground. However, when the App is sent to the background you'll be missing better Artwork, controls, and the playback will stop after some time.
 
 ## Contributing
 
