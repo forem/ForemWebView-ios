@@ -26,7 +26,7 @@ After importing the framework into your project you can initialize the ForemWebV
 
 We have two *deep dive* documents:
 - [ForemWebView deep dive](/docs/ForemWebView-deep-dive.md) is a walkthrough of the capabilities available when you're using the Framework in your project
-- [Native Bridge deep dive](/docs/ForemWebView-deep-dive.md) documents the native interface used to communicate between the Web (DOM + JS) and Swift contexts
+- [Native Bridge deep dive](/docs/native-bridge-deep-dive.md) documents the native interface used to communicate between the Web (DOM + JS) and Swift contexts
 
 #### Important notes:
 - Using SwiftUI? [We would appreciate your feedback after trying out the framework](https://github.com/forem/ForemWebView-ios/issues/4).

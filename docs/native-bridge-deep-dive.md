@@ -4,7 +4,7 @@ The `ForemWebView` instance makes use of [WebKit's WKScriptMessageHandler](https
 
 All these interactions are handled by the [WKScriptMessageHandler implementation](https://github.com/forem/ForemWebView-ios/blob/main/Sources/ForemWebView/ForemWebView+WKScriptMessageHandler.swift#L15).
 
-### Podcast Player
+## Podcast Player
 
 The Podcast Player within [the Forem codebase](https://github.com/forem/forem/blob/master/app/assets/javascripts/initializers/initializePodcastPlayback.js) relies on the Native Bridge to communicate with the `ForemWebView` implementation in order to use native APIs for audio playback.
 
@@ -12,7 +12,7 @@ Messages are JSON encoded and sent both ways (JavaScript -> Swift and Swift -> J
 
 You can see supported messages by the Swift context [here](https://github.com/forem/ForemWebView-ios/blob/main/Sources/ForemWebView/ForemMediaManager/ForemMediaManager.swift#L50) and the supported messages by the JavaScript context [here](https://github.com/forem/forem/blob/master/app/assets/javascripts/initializers/initializePodcastPlayback.js#L485).
 
-### Video Player
+## Video Player
 
 The Video Player works in a very similar way, with JSON encoded messages exchanged between the native and the JavaScript contexts. This is a much more simplified process because the JavaScript context will send in a `play` message and the `ForemWebView` will create a fully native `AVPlayerViewController`.
 
@@ -24,7 +24,7 @@ present(playerController, animated: true) {
 }
 ```
 
-### Native Image Upload
+## Native Image Upload
 
 The Swift context also implements an interface for Native Image Uploads (via Camera or Library picker). This interface allows for a button in the DOM to trigger the native flow and expect the result (uploaded image URL).
 

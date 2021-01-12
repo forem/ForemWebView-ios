@@ -4,7 +4,7 @@ This document provides an in-depth walkthrough of the features available to you 
 
 It's important to know this is a custom implementation of `WKWebView` and you **should not** implement your own `WKNavigationDelegate` logic. Please rely on the provided `ForemWebViewDelegate` for callbacks.
 
-### Navigation and Lifecycle
+## Navigation and Lifecycle
 
 1. Load a Forem instance URL
    - After the first load of a valid Forem instance the variable `foremInstance` will be populated with corresponding metadata
@@ -16,7 +16,7 @@ It's important to know this is a custom implementation of `WKWebView` and you **
    - `estimatedProgress`, `canGoBack`, `canGoForward`, `url`, and any other WKWebView variable for state updates
    - `csrfToken` is automatically populated
 
-### Available helper functions/variables
+## Available helper functions/variables
 
 - `load(_ urlString: String)`
    - Helper method for simplicity: `webView.load("https://dev.to")`
@@ -32,7 +32,7 @@ It's important to know this is a custom implementation of `WKWebView` and you **
   - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes when they become available
 - `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
 
-### Native Podcast Player & Picture in Picture video
+## Native Podcast Player & Picture in Picture video
 
 In order for your App to take advantage of these native features via the `ForemWebView` you'll need to configure a few things:
 1. Make sure you enable `Audio, AirPlay, and Pciture in Picture` from the Background Mode capability in your Project's Target
