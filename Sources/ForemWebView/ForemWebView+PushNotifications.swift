@@ -16,15 +16,11 @@ extension ForemWebView {
         AF.request("https://\(domain)/users/devices",
                    method: .post,
                    parameters: [ "token": token ],
-                   headers: [ "X-CSRF-Token": csrfToken ]).responseJSON { (response) in
+                   headers: [ "X-CSRF-Token": csrfToken ]).response { (response) in
             
-            guard let statusCode = response.response?.statusCode else {
-                puts("ERRORRRRRRR")
-                return
-            }
-
-            if statusCode == 200, let result = response.value as? [String: [String]] {
-                print("SUCCESS")
+            if let statusCode = response.response?.statusCode, statusCode == 200 {
+                puts("SUCCESSSSSSS")
+                self.deviceTokenConfirmed = true
             } else if let error = response.error {
                 print(error.localizedDescription)
             } else {
@@ -41,15 +37,11 @@ extension ForemWebView {
         AF.request("https://\(domain)/users/devices/\(userID)",
                    method: .delete,
                    parameters: [ "token": token ],
-                   headers: [ "X-CSRF-Token": csrfToken ]).responseJSON { (response) in
+                   headers: [ "X-CSRF-Token": csrfToken ]).response { (response) in
             
-            guard let statusCode = response.response?.statusCode else {
-                puts("ERRORRRRRRR")
-                return
-            }
-
-            if statusCode == 200, let result = response.value as? [String: [String]] {
-                print("SUCCESS")
+            if let statusCode = response.response?.statusCode, statusCode == 200 {
+                puts("SUCCESSSSSSS")
+                self.deviceTokenConfirmed = false
             } else if let error = response.error {
                 print(error.localizedDescription)
             } else {

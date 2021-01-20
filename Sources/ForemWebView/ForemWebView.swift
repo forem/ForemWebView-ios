@@ -27,6 +27,7 @@ open class ForemWebView: WKWebView {
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
     open var csrfToken: String?
+    open var deviceTokenConfirmed = false
 
     @objc open dynamic var userData: ForemUserData?
 
