@@ -153,9 +153,9 @@ open class ForemWebView: WKWebView {
             // consumers of the framework to tap into observing `self.userData` and expect changes when the
             // data has actually changed (nil -> 'something' means user logged-in, the opposite for logged-out)
             if self.userData != userData {
-                self.userData = userData
                 self.fetchCSRF { (token) in
                     self.csrfToken = token
+                    self.userData = userData
                 }
             }
         }
