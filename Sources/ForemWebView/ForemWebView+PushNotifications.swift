@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 
 extension ForemWebView {
-    func registerDeviceForPN(token: String) {
+    open func registerDeviceForPN(token: String) {
         guard let csrfToken = csrfToken,
               let domain = foremInstance?.domain else { return }
 
@@ -33,7 +33,7 @@ extension ForemWebView {
         }
     }
     
-    func unregisterDeviceForPN(token: String) {
+    open func unregisterDeviceForPN(token: String) {
         guard let csrfToken = csrfToken,
               let domain = foremInstance?.domain,
               let userID = userData?.userID else { return }
