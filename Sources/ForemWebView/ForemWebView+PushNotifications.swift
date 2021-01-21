@@ -11,6 +11,7 @@ extension ForemWebView {
     open func registerDevice(token: String) {
         guard !userDeviceTokenConfirmed else { return }
         let javascript = """
+                            const params = JSON.stringify({ "token": "\(token)", platform: "iOS" })
                             fetch("/users/devices", {
                                 method: 'POST',
                                 headers: {
@@ -18,7 +19,7 @@ extension ForemWebView {
                                   'X-CSRF-Token': window.csrfToken,
                                   'Content-Type': 'application/json',
                                 },
-                                body: JSON.stringify({ "token": "\(token)" }),
+                                body: params,
                                 credentials: 'same-origin',
                             })
                             null
@@ -36,6 +37,7 @@ extension ForemWebView {
     open func unregisterDevice(token: String, userID: Int) {
         guard userDeviceTokenConfirmed else { return }
         let javascript = """
+                            const params = JSON.stringify({ "token": "\(token)", platform: "iOS" })
                             fetch("/users/devices/\(userID)", {
                                 method: 'DELETE',
                                 headers: {
