@@ -106,12 +106,10 @@ open class ForemWebView: WKWebView {
 
         return gitHubAuth || twitterAuth || url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil
     }
-    
-    // MARK: - Non-open functions
 
     // Async callback will return the `ForemUserData` struct, which encapsulates some information
     // regarding the currently logged in user. It will return `nil` if this data isn't available
-    func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
+    open func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
         var javascript = ""
         if let fileURL = Bundle.module.url(forResource: "fetchUserData", withExtension: "js"),
            let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
@@ -135,6 +133,8 @@ open class ForemWebView: WKWebView {
             }
         }
     }
+    
+    // MARK: - Non-open functions
 
     // Function that fetches the CSRF Token required for direct interaction with the Forem servers
     func fetchCSRF(completion: @escaping (String?) -> Void) {
