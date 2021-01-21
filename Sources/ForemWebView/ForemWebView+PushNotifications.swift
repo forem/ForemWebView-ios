@@ -6,46 +6,54 @@
 //
 
 import UIKit
-import Alamofire
 
 extension ForemWebView {
-    open func registerDeviceForPN(token: String) {
-        guard let csrfToken = csrfToken,
-              let domain = foremInstance?.domain else { return }
-
-        AF.request("https://\(domain)/users/devices",
-                   method: .post,
-                   parameters: [ "token": token ],
-                   headers: [ "X-CSRF-Token": csrfToken ]).response { (response) in
-            
-            if let statusCode = response.response?.statusCode, statusCode == 200 {
-                puts("SUCCESSSSSSS")
-                self.deviceTokenConfirmed = true
-            } else if let error = response.error {
+    open func registerDevice(token: String) {
+        guard !userDeviceTokenConfirmed else { return }
+        let javascript = """
+                            fetch("/users/devices", {
+                                method: 'POST',
+                                headers: {
+                                  Accept: 'application/json',
+                                  'X-CSRF-Token': window.csrfToken,
+                                  'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ "token": "\(token)" }),
+                                credentials: 'same-origin',
+                            })
+                            null
+                         """
+        
+        evaluateJavaScript(javascript) { result, error in
+            if let error = error {
                 print(error.localizedDescription)
             } else {
-                print("Unexpected error")
+                self.userDeviceTokenConfirmed = true
             }
         }
     }
     
-    open func unregisterDeviceForPN(token: String) {
-        guard let csrfToken = csrfToken,
-              let domain = foremInstance?.domain,
-              let userID = userData?.userID else { return }
-
-        AF.request("https://\(domain)/users/devices/\(userID)",
-                   method: .delete,
-                   parameters: [ "token": token ],
-                   headers: [ "X-CSRF-Token": csrfToken ]).response { (response) in
-            
-            if let statusCode = response.response?.statusCode, statusCode == 200 {
-                puts("SUCCESSSSSSS")
-                self.deviceTokenConfirmed = false
-            } else if let error = response.error {
+    open func unregisterDevice(token: String, userID: Int) {
+        guard userDeviceTokenConfirmed else { return }
+        let javascript = """
+                            fetch("/users/devices/\(userID)", {
+                                method: 'DELETE',
+                                headers: {
+                                  Accept: 'application/json',
+                                  'X-CSRF-Token': window.csrfToken,
+                                  'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ "token": "\(token)" }),
+                                credentials: 'same-origin',
+                            })
+                            null
+                         """
+        
+        evaluateJavaScript(javascript) { result, error in
+            if let error = error {
                 print(error.localizedDescription)
             } else {
-                print("Unexpected error")
+                self.userDeviceTokenConfirmed = false
             }
         }
     }

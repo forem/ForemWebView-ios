@@ -10,6 +10,8 @@ public protocol ForemWebViewDelegate: class {
     func requestedMailto(url: URL)
     func didStartNavigation()
     func didFinishNavigation()
+    func didLogin(userData: ForemUserData)
+    func didLogout(userData: ForemUserData)
 }
 
 public enum ForemWebViewError: Error {
@@ -27,7 +29,7 @@ open class ForemWebView: WKWebView {
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
     open var csrfToken: String?
-    open var deviceTokenConfirmed = false
+    open var userDeviceTokenConfirmed = false
 
     @objc open dynamic var userData: ForemUserData?
 
@@ -104,10 +106,12 @@ open class ForemWebView: WKWebView {
 
         return gitHubAuth || twitterAuth || url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil
     }
+    
+    // MARK: - Non-open functions
 
     // Async callback will return the `ForemUserData` struct, which encapsulates some information
     // regarding the currently logged in user. It will return `nil` if this data isn't available
-    open func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
+    func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
         var javascript = ""
         if let fileURL = Bundle.module.url(forResource: "fetchUserData", withExtension: "js"),
            let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
@@ -132,8 +136,6 @@ open class ForemWebView: WKWebView {
         }
     }
 
-    // MARK: - Non-open functions
-
     // Function that fetches the CSRF Token required for direct interaction with the Forem servers
     func fetchCSRF(completion: @escaping (String?) -> Void) {
         evaluateJavaScript(wrappedJS("window.csrfToken")) { result, error in
@@ -156,7 +158,20 @@ open class ForemWebView: WKWebView {
             if self.userData != userData {
                 self.fetchCSRF { (token) in
                     self.csrfToken = token
-                    self.userData = userData
+                    
+                    if let userData = userData {
+                        // Assign newly logged in userData and notify delegate
+                        self.userData = userData
+                        self.foremWebViewDelegate?.didLogin(userData: userData)
+                    } else {
+                        // Clear userData and pass in logged out userData. Done this way in case
+                        // the consumer will check the current userData that is now logged out.
+                        let tempUserData = self.userData
+                        self.userData = nil
+                        if let loggedOutUserData = tempUserData {
+                            self.foremWebViewDelegate?.didLogout(userData: loggedOutUserData)
+                        }
+                    }
                 }
             }
         }
