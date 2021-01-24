@@ -14,7 +14,7 @@ extension ForemWebView {
                             const params = JSON.stringify({
                                 "token": "\(token)",
                                 "platform": "iOS",
-                                "app_bundle": \(appBundle)
+                                "app_bundle": "\(appBundle)"
                             })
                             fetch("/users/devices", {
                                 method: 'POST',
@@ -44,7 +44,7 @@ extension ForemWebView {
                             const params = JSON.stringify({
                                 "token": "\(token)",
                                 "platform": "iOS",
-                                "app_bundle": \(appBundle)
+                                "app_bundle": "\(appBundle)"
                             })
                             fetch("/users/devices/\(userID)", {
                                 method: 'DELETE',
