@@ -9,9 +9,13 @@ import UIKit
 
 extension ForemWebView {
     open func registerDevice(token: String) {
-        guard !userDeviceTokenConfirmed else { return }
+        guard userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
         let javascript = """
-                            const params = JSON.stringify({ "token": "\(token)", platform: "iOS" })
+                            const params = JSON.stringify({
+                                "token": "\(token)",
+                                "platform": "iOS",
+                                "app_bundle": \(appBundle)
+                            })
                             fetch("/users/devices", {
                                 method: 'POST',
                                 headers: {
@@ -35,9 +39,13 @@ extension ForemWebView {
     }
     
     open func unregisterDevice(token: String, userID: Int) {
-        guard userDeviceTokenConfirmed else { return }
+        guard userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
         let javascript = """
-                            const params = JSON.stringify({ "token": "\(token)", platform: "iOS" })
+                            const params = JSON.stringify({
+                                "token": "\(token)",
+                                "platform": "iOS",
+                                "app_bundle": \(appBundle)
+                            })
                             fetch("/users/devices/\(userID)", {
                                 method: 'DELETE',
                                 headers: {
