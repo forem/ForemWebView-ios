@@ -9,7 +9,7 @@ import UIKit
 
 extension ForemWebView {
     open func registerDevice(token: String) {
-        guard userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
+        guard !userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
         let javascript = """
                             const params = JSON.stringify({
                                 "token": "\(token)",
