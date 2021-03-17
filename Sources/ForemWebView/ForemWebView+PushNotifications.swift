@@ -1,9 +1,4 @@
-//
-//  File.swift
-//  
-//
-//  Created by Fernando Valverde on 20/1/21.
-//
+#if os(iOS)
 
 import UIKit
 
@@ -66,3 +61,5 @@ extension ForemWebView {
         }
     }
 }
+
+#endif
