@@ -50,11 +50,9 @@ extension ForemWebView {
                                 method: 'DELETE',
                                 headers: {
                                   Accept: 'application/json',
-                                  'X-CSRF-Token': window.csrfToken,
                                   'Content-Type': 'application/json',
                                 },
-                                body: JSON.stringify({ "token": "\(token)" }),
-                                credentials: 'same-origin',
+                                body: params,
                             })
                             null
                          """
