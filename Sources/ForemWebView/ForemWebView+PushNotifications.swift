@@ -8,7 +8,6 @@ extension ForemWebView {
         let javascript = """
                             var waitingForDataLoad = setInterval(function wait() {
                                 if (window.csrfToken) {
-                                  console.log("GOING IN - window.csrfToken is: ", window.csrfToken);
                                   clearInterval(waitingForDataLoad);
                                   const params = JSON.stringify({
                                       "token": "\(token)",
@@ -25,8 +24,6 @@ extension ForemWebView {
                                       body: params,
                                       credentials: 'same-origin',
                                   })
-                                } else {
-                                    console.log("window.csrfToken is: ", window.csrfToken);
                                 }
                               }, 1);
                             null
