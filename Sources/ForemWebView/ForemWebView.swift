@@ -10,6 +10,7 @@ public protocol ForemWebViewDelegate: class {
     func requestedMailto(url: URL)
     func didStartNavigation()
     func didFinishNavigation()
+    func didFailNavigation()
     func didLogin(userData: ForemUserData)
     func didLogout(userData: ForemUserData)
 }
@@ -32,6 +33,7 @@ open class ForemWebView: WKWebView {
     open var userDeviceTokenConfirmed = false
 
     @objc open dynamic var userData: ForemUserData?
+    var userDataTimer: Timer?
 
     lazy var mediaManager: ForemMediaManager = {
         return ForemMediaManager(webView: self)
@@ -175,24 +177,6 @@ open class ForemWebView: WKWebView {
                         self.userData = nil
                     }
                 }
-            }
-        }
-    }
-
-    // Function that will ensure the `body` element in the DOM has a mutation observer that will relay
-    // attribute updates via a WebKit messageHandler (named `body`). See contents of `bodyMutationObserver.js`
-    func ensureMutationObserver() {
-        var javascript = ""
-        if let fileURL = Bundle.module.url(forResource: "bodyMutationObserver", withExtension: "js"),
-           let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
-            javascript = fileContents
-        }
-
-        guard !javascript.isEmpty else { return }
-        evaluateJavaScript(wrappedJS(javascript)) { _, error in
-            if let error = error {
-                print("Unable to ensure body mutation observer: \(error.localizedDescription)")
-                self.updateUserData()
             }
         }
     }

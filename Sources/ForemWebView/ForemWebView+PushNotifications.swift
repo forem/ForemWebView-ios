@@ -25,7 +25,7 @@ extension ForemWebView {
                                       credentials: 'same-origin',
                                   })
                                 }
-                              }, 1);
+                              }, 1000);
                             null
                          """
         

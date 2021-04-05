@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/Yummypets/YPImagePicker", .branch("spm")),
+        .package(url: "https://github.com/Yummypets/YPImagePicker", .revision("2cf2d150bb0861f2079bc44b56c17aabf5e5d5aa")),
         .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.4.0"),
         .package(url: "https://github.com/Alamofire/AlamofireImage.git", from: "4.1.0"),
     ],
@@ -29,9 +29,6 @@ let package = Package(
                 .product(name: "YPImagePicker", package: "YPImagePicker", condition: .when(platforms: [.iOS])),
             ],
             resources: [.process("JS+CSS")]),
-        .testTarget(
-            name: "ForemWebViewTests",
-            dependencies: ["ForemWebView"],
-            resources: [.process("Assets")])
+        .testTarget(name: "ForemWebViewTests", dependencies: ["ForemWebView"], resources: [.process("Assets")])
     ]
 )
