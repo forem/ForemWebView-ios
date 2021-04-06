@@ -17,8 +17,6 @@ extension ForemWebView: WKScriptMessageHandler {
             mediaManager.handlePodcastMessage(message.body as? [String: String] ?? [:])
         case "video":
             mediaManager.handleVideoMessage(message.body as? [String: String] ?? [:])
-        case "body":
-            updateUserData()
         case "imageUpload":
             handleImagePicker(message.body as? [String: String] ?? [:])
         case "haptic":

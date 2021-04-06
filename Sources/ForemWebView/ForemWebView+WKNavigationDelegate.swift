@@ -11,8 +11,13 @@ extension ForemWebView: WKNavigationDelegate {
         //Remove scroll if /connect view
         webView.scrollView.isScrollEnabled = !(webView.url?.path.hasPrefix("/connect") ?? false)
         ensureForemInstance()
-        ensureMutationObserver()
         foremWebViewDelegate?.didFinishNavigation()
+        
+        // Create one timer that will make sure we periodically fetch the user data from the body element
+        guard userDataTimer == nil else { return }
+        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            self.updateUserData()
+        }
     }
 
     public func webView(_ webView: WKWebView,
@@ -25,6 +30,10 @@ extension ForemWebView: WKNavigationDelegate {
         }
         let policy = navigationPolicy(url: url, navigationType: navigationAction.navigationType)
         decisionHandler(policy)
+    }
+    
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        foremWebViewDelegate?.didFailNavigation()
     }
 
     // MARK: - Action Policy
