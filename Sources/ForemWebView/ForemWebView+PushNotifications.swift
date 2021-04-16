@@ -8,7 +8,6 @@ extension ForemWebView {
         let javascript = """
                             var waitingForDataLoad = setInterval(function wait() {
                                 if (window.csrfToken) {
-                                  clearInterval(waitingForDataLoad);
                                   const params = JSON.stringify({
                                       "token": "\(token)",
                                       "platform": "iOS",
@@ -23,9 +22,14 @@ extension ForemWebView {
                                       },
                                       body: params,
                                       credentials: 'same-origin',
+                                  }).then((response) => {
+                                      // Clear the interval if the registration succeeded
+                                      if (response.status === 200) {
+                                        clearInterval(waitingForDataLoad);
+                                      }
                                   })
                                 }
-                              }, 1000);
+                              }, 3000);
                             null
                          """
         
