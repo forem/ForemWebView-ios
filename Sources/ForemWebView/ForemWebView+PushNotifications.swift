@@ -31,9 +31,11 @@ extension ForemWebView {
                                       } else {
                                         console.log("FAILED");
                                       }
-                                  })
+                                  }).catch((error) => {
+                                      console.log("Error registering Device:", error);
+                                  });
                                 }
-                              }, 1500);
+                              }, 2000);
                             null
                          """
         
