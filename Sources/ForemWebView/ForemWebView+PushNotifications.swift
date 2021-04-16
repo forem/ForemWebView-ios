@@ -33,7 +33,7 @@ extension ForemWebView {
                                       }
                                   })
                                 }
-                              }, 3000);
+                              }, 1500);
                             null
                          """
         
