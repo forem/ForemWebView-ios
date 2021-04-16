@@ -21,8 +21,8 @@ extension ForemWebView {
                                     },
                                     body: params,
                                     credentials: 'same-origin',
-                                }).then(response => response.json()).then((data) => {
-                                    if (data.id) {
+                                }).then((response) => {
+                                    if (response.status === 201) {
                                         // Clear the interval if the registration succeeded
                                         clearInterval(window.deviceRegistrationInterval);
                                     } else {
@@ -46,7 +46,7 @@ extension ForemWebView {
                                 });
                             }
 
-                            window.deviceRegistrationMs = 500;
+                            window.deviceRegistrationMs = 700;
                             window.deviceRegistrationInterval = setInterval(
                                 window.registerDeviceToken,
                                 window.deviceRegistrationMs
