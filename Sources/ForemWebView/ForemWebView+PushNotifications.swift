@@ -12,11 +12,12 @@ extension ForemWebView {
                                     "platform": "iOS",
                                     "app_bundle": "\(appBundle)"
                                 })
+                                const csrfToken = document.querySelector("meta[name='csrf-token']")?.content;
                                 fetch("/users/devices", {
                                     method: 'POST',
                                     headers: {
                                         Accept: 'application/json',
-                                        'X-CSRF-Token': window.csrfToken,
+                                        'X-CSRF-Token': csrfToken,
                                         'Content-Type': 'application/json',
                                     },
                                     body: params,
@@ -25,17 +26,18 @@ extension ForemWebView {
                                     if (response.status === 201) {
                                         // Clear the interval if the registration succeeded
                                         clearInterval(window.deviceRegistrationInterval);
+                                        console.log("Registered for PN delivery");
                                     } else {
                                         throw new Error("REQUEST FAILED");
                                     }
                                 }).catch((error) => {
-                                    // Re-attempt with exponential backoff up to ~10s delay
+                                    // Re-attempt with exponential backoff up to ~20s delay
                                     clearInterval(window.deviceRegistrationInterval);
-                                    if (window.deviceRegistrationMs < 10000) {
+                                    if (window.deviceRegistrationMs < 20000) {
                                         window.deviceRegistrationMs = window.deviceRegistrationMs * 2;
                                     }
 
-                                    console.log(`Error registering Device Token. Next attempt in ${window.deviceRegistrationMs/1.0}s`);
+                                    console.log(`Unable to register Device. Next attempt in ${window.deviceRegistrationMs/1000.0}s`);
                                     window.deviceRegistrationInterval = setInterval(
                                         window.registerDeviceToken,
                                         window.deviceRegistrationMs
