@@ -22,10 +22,10 @@ extension ForemWebView {
                                       },
                                       body: params,
                                       credentials: 'same-origin',
-                                  }).then(response => response.json()).then((data) => {
-                                      // Clear the interval if the registration succeeded and responded with a Device id
-                                      console.log("DEVICES RESPONSE: ", data);
-                                      if (data.id) {
+                                  }).then((response) => {
+                                      // Clear the interval if the registration succeeded
+                                      console.log("DEVICES RESPONSE: ", response);
+                                      if (response.status === 200) {
                                         console.log("SUCCESS")
                                         clearInterval(waitingForDataLoad);
                                       } else {
@@ -33,7 +33,7 @@ extension ForemWebView {
                                       }
                                   })
                                 }
-                              }, 1500);
+                              }, 3000);
                             null
                          """
         
