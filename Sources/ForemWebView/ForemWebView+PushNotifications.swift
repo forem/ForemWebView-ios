@@ -26,12 +26,12 @@ extension ForemWebView {
                                     console.log("DEVICES RESPONSE: ", data);
                                     if (data.id) {
                                         console.log("SUCCESS")
-                                        clearInterval(window.registerDeviceToken);
+                                        clearInterval(window.deviceRegistrationInterval);
                                     } else {
                                         throw new Error("REQUEST FAILED");
                                     }
                                 }).catch((error) => {
-                                    clearInterval(window.registerDeviceToken);
+                                    clearInterval(window.deviceRegistrationInterval);
                                     console.log("Error registering Device:", error);
                                     window.deviceRegistrationMs = window.deviceRegistrationMs * 2;
                                     console.log("Next attempt in (ms):", window.deviceRegistrationMs);
