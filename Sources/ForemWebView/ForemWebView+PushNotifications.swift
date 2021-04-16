@@ -24,8 +24,12 @@ extension ForemWebView {
                                       credentials: 'same-origin',
                                   }).then((response) => {
                                       // Clear the interval if the registration succeeded
+                                      console.log("DEVICES RESPONSE: ", response);
                                       if (response.status === 200) {
+                                        console.log("SUCCESS")
                                         clearInterval(waitingForDataLoad);
+                                      } else {
+                                        console.log("FAILED");
                                       }
                                   })
                                 }
