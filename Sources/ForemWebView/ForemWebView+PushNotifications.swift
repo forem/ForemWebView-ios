@@ -6,36 +6,47 @@ extension ForemWebView {
     open func registerDevice(token: String) {
         guard !userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
         let javascript = """
-                            var waitingForDataLoad = setInterval(function wait() {
-                                if (window.csrfToken) {
-                                  const params = JSON.stringify({
-                                      "token": "\(token)",
-                                      "platform": "iOS",
-                                      "app_bundle": "\(appBundle)"
-                                  })
-                                  fetch("/users/devices", {
-                                      method: 'POST',
-                                      headers: {
+                            window.registerDeviceToken = () => {
+                                const params = JSON.stringify({
+                                    "token": "\(token)",
+                                    "platform": "iOS",
+                                    "app_bundle": "\(appBundle)"
+                                })
+                                fetch("/users/devices", {
+                                    method: 'POST',
+                                    headers: {
                                         Accept: 'application/json',
                                         'X-CSRF-Token': window.csrfToken,
                                         'Content-Type': 'application/json',
-                                      },
-                                      body: params,
-                                      credentials: 'same-origin',
-                                  }).then(response => response.json()).then((data) => {
-                                      // Clear the interval if the registration succeeded
-                                      console.log("DEVICES RESPONSE: ", data);
-                                      if (data.id) {
+                                    },
+                                    body: params,
+                                    credentials: 'same-origin',
+                                }).then(response => response.json()).then((data) => {
+                                    // Clear the interval if the registration succeeded
+                                    console.log("DEVICES RESPONSE: ", data);
+                                    if (data.id) {
                                         console.log("SUCCESS")
-                                        clearInterval(waitingForDataLoad);
-                                      } else {
-                                        console.log("FAILED");
-                                      }
-                                  }).catch((error) => {
-                                      console.log("Error registering Device:", error);
-                                  });
-                                }
-                              }, 2000);
+                                        clearInterval(window.registerDeviceToken);
+                                    } else {
+                                        throw new Error("REQUEST FAILED");
+                                    }
+                                }).catch((error) => {
+                                    clearInterval(window.registerDeviceToken);
+                                    console.log("Error registering Device:", error);
+                                    window.deviceRegistrationMs = window.deviceRegistrationMs * 2;
+                                    console.log("Next attempt in (ms):", window.deviceRegistrationMs);
+                                    window.deviceRegistrationInterval = setInterval(
+                                        window.registerDeviceToken,
+                                        window.deviceRegistrationMs
+                                    );
+                                });
+                            }
+
+                            window.deviceRegistrationMs = 500;
+                            window.deviceRegistrationInterval = setInterval(
+                                window.registerDeviceToken,
+                                window.deviceRegistrationMs
+                            );
                             null
                          """
         
