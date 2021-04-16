@@ -6,26 +6,51 @@ extension ForemWebView {
     open func registerDevice(token: String) {
         guard !userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
         let javascript = """
-                            var waitingForDataLoad = setInterval(function wait() {
-                                if (window.csrfToken) {
-                                  clearInterval(waitingForDataLoad);
-                                  const params = JSON.stringify({
-                                      "token": "\(token)",
-                                      "platform": "iOS",
-                                      "app_bundle": "\(appBundle)"
-                                  })
-                                  fetch("/users/devices", {
-                                      method: 'POST',
-                                      headers: {
+                            window.registerDeviceToken = () => {
+                                const params = JSON.stringify({
+                                    "token": "\(token)",
+                                    "platform": "iOS",
+                                    "app_bundle": "\(appBundle)"
+                                })
+                                fetch("/users/devices", {
+                                    method: 'POST',
+                                    headers: {
                                         Accept: 'application/json',
                                         'X-CSRF-Token': window.csrfToken,
                                         'Content-Type': 'application/json',
-                                      },
-                                      body: params,
-                                      credentials: 'same-origin',
-                                  })
-                                }
-                              }, 1000);
+                                    },
+                                    body: params,
+                                    credentials: 'same-origin',
+                                }).then((response) => {
+                                    if (response.status === 201) {
+                                        // Clear the interval if the registration succeeded
+                                        clearInterval(window.deviceRegistrationInterval);
+                                    } else {
+                                        throw new Error("REQUEST FAILED");
+                                    }
+                                }).catch((error) => {
+                                    // Re-attempt with exponential backoff up to ~10s delay
+                                    clearInterval(window.deviceRegistrationInterval);
+                                    if (window.deviceRegistrationMs < 10000) {
+                                        window.deviceRegistrationMs = window.deviceRegistrationMs * 2;
+                                    }
+
+                                    console.log(`Error registering Device Token. Next attempt in ${window.deviceRegistrationMs/1.0}s`);
+                                    window.deviceRegistrationInterval = setInterval(
+                                        window.registerDeviceToken,
+                                        window.deviceRegistrationMs
+                                    );
+
+                                    // Force a refresh on BaseData (CSRF Token)
+                                    fetchBaseData();
+                                });
+                            }
+
+                            window.deviceRegistrationMs = 700;
+                            window.deviceRegistrationInterval = setInterval(
+                                window.registerDeviceToken,
+                                window.deviceRegistrationMs
+                            );
                             null
                          """
         
