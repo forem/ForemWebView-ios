@@ -22,23 +22,27 @@ extension ForemWebView {
                                     body: params,
                                     credentials: 'same-origin',
                                 }).then(response => response.json()).then((data) => {
-                                    // Clear the interval if the registration succeeded
-                                    console.log("DEVICES RESPONSE: ", data);
                                     if (data.id) {
-                                        console.log("SUCCESS")
+                                        // Clear the interval if the registration succeeded
                                         clearInterval(window.deviceRegistrationInterval);
                                     } else {
                                         throw new Error("REQUEST FAILED");
                                     }
                                 }).catch((error) => {
+                                    // Re-attempt with exponential backoff up to ~10s delay
                                     clearInterval(window.deviceRegistrationInterval);
-                                    console.log("Error registering Device:", error);
-                                    window.deviceRegistrationMs = window.deviceRegistrationMs * 2;
-                                    console.log("Next attempt in (ms):", window.deviceRegistrationMs);
+                                    if (window.deviceRegistrationMs < 10000) {
+                                        window.deviceRegistrationMs = window.deviceRegistrationMs * 2;
+                                    }
+
+                                    console.log(`Error registering Device Token. Next attempt in ${window.deviceRegistrationMs/1.0}s`);
                                     window.deviceRegistrationInterval = setInterval(
                                         window.registerDeviceToken,
                                         window.deviceRegistrationMs
                                     );
+
+                                    // Force a refresh on BaseData (CSRF Token)
+                                    fetchBaseData();
                                 });
                             }
 
