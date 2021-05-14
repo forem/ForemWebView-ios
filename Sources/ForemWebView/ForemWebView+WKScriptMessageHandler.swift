@@ -120,11 +120,15 @@ extension ForemWebView: WKScriptMessageHandler {
                          console.log("Injecting message")
                          var element = document.getElementById("\(targetElementId)");
                          console.log("Target element: ", element)
-                         element.value = `\(jsonString)`;
-                         console.log("Target element (again): ", element)
-                         var changeEvent = new Event('input', { bubbles: true });
-                         element.dispatchEvent(changeEvent);
+                         
                          """
+        
+//        element.value = `\(jsonString)`;
+//        console.log("Target element (again): ", element)
+//        var changeEvent = new Event('input', { bubbles: true });
+//        element.dispatchEvent(changeEvent);
+        
+        javascript.replacingOccurrences(of: "\\\"", with: "")
         evaluateJavaScript(javascript) { res, error in
             print("WELP: \(String(describing: res)) - \(String(describing: error))")
             guard error == nil else {
