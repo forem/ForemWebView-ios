@@ -117,12 +117,16 @@ extension ForemWebView: WKScriptMessageHandler {
         // React doesn't trigger `onChange` when updating the value of inputs
         // programmatically, so we are forced to dispatch the event manually
         let javascript = """
-                            let element = document.getElementById('\(targetElementId)');
-                            element.value = `\(jsonString)`;
-                            let changeEvent = new Event('change', { bubbles: true });
-                            element.dispatchEvent(changeEvent);
+                         console.log("Injecting message")
+                         let element = document.getElementById('\(targetElementId)');
+                         console.log("Target element: ", element)
+                         element.value = `\(jsonString)`;
+                         console.log("Target element (again): ", element)
+                         let changeEvent = new Event('change', { bubbles: true });
+                         element.dispatchEvent(changeEvent);
                          """
-        evaluateJavaScript(wrappedJS(javascript)) { _, error in
+        evaluateJavaScript(javascript) { res, error in
+            print("WELP: \(String(describing: res)) - \(String(describing: error))")
             guard error == nil else {
                 print(error.debugDescription)
                 return
