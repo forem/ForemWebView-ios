@@ -118,7 +118,7 @@ extension ForemWebView: WKScriptMessageHandler {
         // programmatically, so we are forced to dispatch the event manually
         let javascript = """
                          console.log("Injecting message")
-                         var element = document.getElementById('\(targetElementId)');
+                         var element = document.getElementById("\(targetElementId)");
                          console.log("Target element: ", element)
                          element.value = `\(jsonString)`;
                          console.log("Target element (again): ", element)
