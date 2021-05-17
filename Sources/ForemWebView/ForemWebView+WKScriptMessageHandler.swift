@@ -125,7 +125,7 @@ extension ForemWebView: WKScriptMessageHandler {
                          }
                          """
         
-        evaluateJavaScript(wrappedJS(javascript)) { res, error in
+        evaluateJavaScript(wrappedJS(javascript)) { _, error in
             guard error == nil else {
                 print(error.debugDescription)
                 return
