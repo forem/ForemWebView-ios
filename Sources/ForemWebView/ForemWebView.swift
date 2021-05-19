@@ -4,7 +4,7 @@ import UIKit
 import WebKit
 import AVKit
 
-public protocol ForemWebViewDelegate: class {
+public protocol ForemWebViewDelegate: AnyObject {
     func willStartNativeVideo(playerController: AVPlayerViewController)
     func requestedExternalSite(url: URL)
     func requestedMailto(url: URL)
@@ -201,6 +201,7 @@ open class ForemWebView: WKWebView {
 
             do {
                 self.foremInstance = try JSONDecoder().decode(ForemInstanceMetadata.self, from: Data(jsonString.utf8))
+                self.evaluateJavaScript("window.location.reload()")
             } catch {
                 print("Error parsing Forem Instance Metadata: \(error)")
             }
