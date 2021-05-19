@@ -86,7 +86,7 @@ open class ForemWebView: WKWebView {
     // since it will keep track of the `baseHost` variable.
     open func load(_ urlString: String) {
         if let url = URL(string: urlString) {
-            let request = URLRequest(url: url)
+            let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
             load(request)
         }
     }
