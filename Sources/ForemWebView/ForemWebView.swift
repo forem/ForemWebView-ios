@@ -121,7 +121,6 @@ open class ForemWebView: WKWebView {
         guard !javascript.isEmpty else { return }
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard let jsonString = result as? String else {
-                print("No user data available: \(error?.localizedDescription ?? "Logged-out")")
                 completion(nil)
                 return
             }
