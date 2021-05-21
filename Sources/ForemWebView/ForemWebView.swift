@@ -78,6 +78,7 @@ open class ForemWebView: WKWebView {
         configuration.mediaTypesRequiringUserActionForPlayback = []
         allowsBackForwardNavigationGestures = true
         navigationDelegate = self
+        uiDelegate = self
     }
 
     // MARK: - Interface functions (open)
