@@ -201,7 +201,9 @@ open class ForemWebView: WKWebView {
 
             do {
                 self.foremInstance = try JSONDecoder().decode(ForemInstanceMetadata.self, from: Data(jsonString.utf8))
-                self.evaluateJavaScript("window.location.reload()")
+                // This only happens once (on first load) and forces a reload in case navigator API didn't load properly
+                let script = "if (navigator.clipboard == null && window.isSecureContext) { window.location.reload() }"
+                self.evaluateJavaScript(script)
             } catch {
                 print("Error parsing Forem Instance Metadata: \(error)")
             }
