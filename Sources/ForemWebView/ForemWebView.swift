@@ -4,7 +4,7 @@ import UIKit
 import WebKit
 import AVKit
 
-public protocol ForemWebViewDelegate: class {
+public protocol ForemWebViewDelegate: AnyObject {
     func willStartNativeVideo(playerController: AVPlayerViewController)
     func requestedExternalSite(url: URL)
     func requestedMailto(url: URL)
@@ -78,6 +78,7 @@ open class ForemWebView: WKWebView {
         configuration.mediaTypesRequiringUserActionForPlayback = []
         allowsBackForwardNavigationGestures = true
         navigationDelegate = self
+        uiDelegate = self
     }
 
     // MARK: - Interface functions (open)
@@ -121,7 +122,6 @@ open class ForemWebView: WKWebView {
         guard !javascript.isEmpty else { return }
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard let jsonString = result as? String else {
-                print("No user data available: \(error?.localizedDescription ?? "Logged-out")")
                 completion(nil)
                 return
             }
@@ -202,6 +202,9 @@ open class ForemWebView: WKWebView {
 
             do {
                 self.foremInstance = try JSONDecoder().decode(ForemInstanceMetadata.self, from: Data(jsonString.utf8))
+                // This only happens once (on first load) and forces a reload in case navigator API didn't load properly
+                let script = "if (navigator.clipboard == null && window.isSecureContext) { window.location.reload() }"
+                self.evaluateJavaScript(script)
             } catch {
                 print("Error parsing Forem Instance Metadata: \(error)")
             }
