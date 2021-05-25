@@ -40,16 +40,26 @@ open class ForemWebView: WKWebView {
     }()
 
     required public init?(coder: NSCoder) {
-        super.init(coder: coder)
+        let customConfig = ForemWebView.configuration()
+        super.init(frame: UIScreen.main.bounds, configuration: customConfig)
         setupWebView()
     }
 
     public override init(frame: CGRect, configuration: WKWebViewConfiguration) {
+        let customConfig = ForemWebView.configuration(base: configuration)
+        super.init(frame: frame, configuration: customConfig)
+        setupWebView()
+    }
+    
+    // Static method that helps recreate a custom configuration required before instantiation (init methods)
+    class func configuration(base configuration: WKWebViewConfiguration = WKWebViewConfiguration()) -> WKWebViewConfiguration {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
         configuration.applicationNameForUserAgent = frameworkIdentifier
-        super.init(frame: frame, configuration: configuration)
-        setupWebView()
+
+        configuration.allowsInlineMediaPlayback = true
+        configuration.mediaTypesRequiringUserActionForPlayback = []
+        return configuration
     }
 
     func setupWebView() {
@@ -60,9 +70,6 @@ open class ForemWebView: WKWebView {
         if AVPictureInPictureController.isPictureInPictureSupported() {
             configuration.userContentController.add(self, name: "video")
         }
-
-        configuration.allowsInlineMediaPlayback = true
-        configuration.mediaTypesRequiringUserActionForPlayback = []
         allowsBackForwardNavigationGestures = true
         navigationDelegate = self
         uiDelegate = self
