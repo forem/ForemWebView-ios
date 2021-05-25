@@ -51,7 +51,7 @@ open class ForemWebView: WKWebView {
         setupWebView()
     }
     
-    // Static method that helps recreate a custom configuration required before instantiation (init methods)
+    // Helper function that helps recreate a custom configuration required before instantiation (init methods)
     class func configuration(base configuration: WKWebViewConfiguration = WKWebViewConfiguration()) -> WKWebViewConfiguration {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
