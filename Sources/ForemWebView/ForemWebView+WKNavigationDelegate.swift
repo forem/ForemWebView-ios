@@ -14,10 +14,10 @@ extension ForemWebView: WKNavigationDelegate {
         foremWebViewDelegate?.didFinishNavigation()
         
         // Create one timer that will make sure we periodically fetch the user data from the body element
-        guard userDataTimer == nil else { return }
-        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            self.updateUserData()
-        }
+//        guard userDataTimer == nil else { return }
+//        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+//            self.updateUserData()
+//        }
     }
 
     public func webView(_ webView: WKWebView,
