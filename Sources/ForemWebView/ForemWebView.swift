@@ -54,17 +54,17 @@ open class ForemWebView: WKWebView {
         // as non-malicious. Example: reCaptcha may take into account a "familiarly formatted" as more
         // trustworthy compared to bots thay may use more plain strings like "Forem"/"DEV"/etc
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
-        evaluateJavaScript("navigator.userAgent") { (result, error) in
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-            let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
-            if let result = result {
-                self.customUserAgent = "\(result) \(frameworkIdentifier)"
-            } else {
-                print("Error: \(String(describing: error?.localizedDescription))")
-                print("Unable to extend the base UserAgent. Will default to '\(frameworkIdentifier)'")
-                self.customUserAgent = frameworkIdentifier
-            }
-        }
+//        evaluateJavaScript("navigator.userAgent") { (result, error) in
+//            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+//            let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
+//            if let result = result {
+//                self.customUserAgent = "\(result) \(frameworkIdentifier)"
+//            } else {
+//                print("Error: \(String(describing: error?.localizedDescription))")
+//                print("Unable to extend the base UserAgent. Will default to '\(frameworkIdentifier)'")
+//                self.customUserAgent = frameworkIdentifier
+//            }
+//        }
 
         configuration.userContentController.add(self, name: "haptic")
         configuration.userContentController.add(self, name: "body")
