@@ -50,6 +50,22 @@ open class ForemWebView: WKWebView {
     }
 
     func setupWebView() {
+//        evaluateJavaScript("navigator.userAgent") { (result, error) in
+//            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+//            let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
+//            if let result = result {
+//                self.customUserAgent = "\(result) \(frameworkIdentifier)"
+//            } else {
+//                print("Error: \(String(describing: error?.localizedDescription))")
+//                print("Unable to extend the base UserAgent. Will default to '\(frameworkIdentifier)'")
+//                self.customUserAgent = frameworkIdentifier
+//            }
+//        }
+        
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
+        
+        configuration.applicationNameForUserAgent = frameworkIdentifier
         configuration.userContentController.add(self, name: "haptic")
         configuration.userContentController.add(self, name: "body")
         configuration.userContentController.add(self, name: "podcast")
@@ -186,7 +202,7 @@ open class ForemWebView: WKWebView {
 
             do {
                 self.foremInstance = try JSONDecoder().decode(ForemInstanceMetadata.self, from: Data(jsonString.utf8))
-                self.ensureCustomUserAgent()
+//                self.ensureCustomUserAgent()
             } catch {
                 print("Error parsing Forem Instance Metadata: \(error)")
             }
@@ -195,23 +211,23 @@ open class ForemWebView: WKWebView {
     
     // Helper function that will customize the UserAgent so the web context will detect we are
     // navigating in a ForemWebView. This will allow us to make use of native bridge features
-    func ensureCustomUserAgent() {
-        // This approach maintains a UserAgent format that most servers & third party services will see us
-        // as non-malicious. Example: reCaptcha may take into account a "familiarly formatted" as more
-        // trustworthy compared to bots thay may use more plain strings like "Forem"/"DEV"/etc
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
-        evaluateJavaScript("navigator.userAgent") { (result, error) in
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-            let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
-            if let result = result {
-                self.customUserAgent = "\(result) \(frameworkIdentifier)"
-            } else {
-                print("Error: \(String(describing: error?.localizedDescription))")
-                print("Unable to extend the base UserAgent. Will default to '\(frameworkIdentifier)'")
-                self.customUserAgent = frameworkIdentifier
-            }
-        }
-    }
+//    func ensureCustomUserAgent() {
+//        // This approach maintains a UserAgent format that most servers & third party services will see us
+//        // as non-malicious. Example: reCaptcha may take into account a "familiarly formatted" as more
+//        // trustworthy compared to bots thay may use more plain strings like "Forem"/"DEV"/etc
+//        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+//        evaluateJavaScript("navigator.userAgent") { (result, error) in
+//            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+//            let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
+//            if let result = result {
+//                self.customUserAgent = "\(result) \(frameworkIdentifier)"
+//            } else {
+//                print("Error: \(String(describing: error?.localizedDescription))")
+//                print("Unable to extend the base UserAgent. Will default to '\(frameworkIdentifier)'")
+//                self.customUserAgent = frameworkIdentifier
+//            }
+//        }
+//    }
 
     // Helper function to close the Podcast Player UI in the DOM
     func closePodcastUI() {
