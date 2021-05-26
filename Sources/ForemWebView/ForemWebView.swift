@@ -40,32 +40,29 @@ open class ForemWebView: WKWebView {
     }()
 
     required public init?(coder: NSCoder) {
-        super.init(coder: coder)
+        let customConfig = ForemWebView.configuration()
+        super.init(frame: UIScreen.main.bounds, configuration: customConfig)
         setupWebView()
     }
 
     public override init(frame: CGRect, configuration: WKWebViewConfiguration) {
-        super.init(frame: frame, configuration: configuration)
+        let customConfig = ForemWebView.configuration(base: configuration)
+        super.init(frame: frame, configuration: customConfig)
         setupWebView()
+    }
+    
+    // Helper function that helps recreate a custom configuration required before instantiation (init methods)
+    class func configuration(base configuration: WKWebViewConfiguration = WKWebViewConfiguration()) -> WKWebViewConfiguration {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
+        configuration.applicationNameForUserAgent = frameworkIdentifier
+
+        configuration.allowsInlineMediaPlayback = true
+        configuration.mediaTypesRequiringUserActionForPlayback = []
+        return configuration
     }
 
     func setupWebView() {
-        // This approach maintains a UserAgent format that most servers & third party services will see us
-        // as non-malicious. Example: reCaptcha may take into account a "familiarly formatted" as more
-        // trustworthy compared to bots thay may use more plain strings like "Forem"/"DEV"/etc
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
-        evaluateJavaScript("navigator.userAgent") { (result, error) in
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-            let frameworkIdentifier = "ForemWebView/\(version ?? "0.0")"
-            if let result = result {
-                self.customUserAgent = "\(result) \(frameworkIdentifier)"
-            } else {
-                print("Error: \(String(describing: error?.localizedDescription))")
-                print("Unable to extend the base UserAgent. Will default to '\(frameworkIdentifier)'")
-                self.customUserAgent = frameworkIdentifier
-            }
-        }
-
         configuration.userContentController.add(self, name: "haptic")
         configuration.userContentController.add(self, name: "body")
         configuration.userContentController.add(self, name: "podcast")
@@ -73,9 +70,6 @@ open class ForemWebView: WKWebView {
         if AVPictureInPictureController.isPictureInPictureSupported() {
             configuration.userContentController.add(self, name: "video")
         }
-
-        configuration.allowsInlineMediaPlayback = true
-        configuration.mediaTypesRequiringUserActionForPlayback = []
         allowsBackForwardNavigationGestures = true
         navigationDelegate = self
         uiDelegate = self
@@ -202,9 +196,6 @@ open class ForemWebView: WKWebView {
 
             do {
                 self.foremInstance = try JSONDecoder().decode(ForemInstanceMetadata.self, from: Data(jsonString.utf8))
-                // This only happens once (on first load) and forces a reload in case navigator API didn't load properly
-                let script = "if (navigator.clipboard == null && window.isSecureContext) { window.location.reload() }"
-                self.evaluateJavaScript(script)
             } catch {
                 print("Error parsing Forem Instance Metadata: \(error)")
             }

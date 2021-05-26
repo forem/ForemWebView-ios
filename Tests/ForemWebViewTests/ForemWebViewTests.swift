@@ -41,9 +41,12 @@ final class ForemWebViewTests: XCTestCase {
         let promise = expectation(description: "Custom UserAgent")
         // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
-            let userAgentCheck = webView.customUserAgent?.contains("ForemWebView")
-            XCTAssertTrue(userAgentCheck ?? false, "The UserAgent contains 'ForemWebView' for metrics")
-            promise.fulfill()
+            webView.evaluateJavaScript("navigator.userAgent") { (result, error) in
+                guard let userAgent = result as? String else { return }
+                let userAgentCheck = userAgent.contains("ForemWebView")
+                XCTAssertTrue(userAgentCheck, "The UserAgent contains 'ForemWebView' for identification purposes")
+                promise.fulfill()
+            }
         }
         wait(for: [promise], timeout: timeout)
     }
