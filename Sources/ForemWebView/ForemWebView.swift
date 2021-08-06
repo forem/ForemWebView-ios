@@ -98,7 +98,7 @@ open class ForemWebView: WKWebView {
         
         snapshotPreview = cachedState.snapshot
         addSubview(snapshotPreview!)
-        snapshotPreview?.frame = self.frame
+        snapshotPreview?.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
     }
 
     // Returns `true` if the url provided is considered of the supported 3rd party redirect URLs
