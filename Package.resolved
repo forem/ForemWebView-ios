@@ -41,7 +41,7 @@
         "package": "YPImagePicker",
         "repositoryURL": "https://github.com/Yummypets/YPImagePicker",
         "state": {
-          "branch": "spm",
+          "branch": null,
           "revision": "2cf2d150bb0861f2079bc44b56c17aabf5e5d5aa",
           "version": null
         }
