@@ -26,6 +26,7 @@ public enum ForemWebViewTheme {
 open class ForemWebView: WKWebView {
 
     var videoPlayerLayer: AVPlayerLayer?
+    var snapshotPreview: UIView?
 
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
@@ -84,6 +85,20 @@ open class ForemWebView: WKWebView {
             let request = URLRequest(url: url)
             load(request)
         }
+    }
+    
+    // Helper function that performs a load on the webView. It's the recommended interface to use
+    // if a cached state has been stored. It will display the cached snapshot until the webview has
+    // had time to load the custom URL of the cached state.
+    open func load(_ cachedState: ForemWebViewCachedState) {
+        if let url = URL(string: cachedState.customURL) {
+            let request = URLRequest(url: url)
+            load(request)
+        }
+        
+        snapshotPreview = cachedState.snapshot
+        addSubview(snapshotPreview!)
+        snapshotPreview?.frame = self.frame
     }
 
     // Returns `true` if the url provided is considered of the supported 3rd party redirect URLs

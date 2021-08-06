@@ -4,8 +4,8 @@ import UIKit
 import WebKit
 import Foundation
 
-struct ForemWebViewCachedState {
-    var url: String
+public struct ForemWebViewCachedState {
+    var customURL: String
     var snapshot: UIView
 }
 

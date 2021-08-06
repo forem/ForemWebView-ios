@@ -35,7 +35,7 @@ final class ForemWebViewTests: XCTestCase {
     ]
     
     func testCustomUserAgent() {
-        let webView = ForemWebView.ForemWebView()
+        let webView = ForemWebView()
         webView.loadHTMLString(loggedOutHTML, baseURL: nil)
         
         let promise = expectation(description: "Custom UserAgent")
