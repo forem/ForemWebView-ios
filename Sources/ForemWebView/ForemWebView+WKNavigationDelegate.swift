@@ -9,7 +9,7 @@ extension ForemWebView: WKNavigationDelegate {
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if let cachedState = self.cachedState {
-            scrollView.setContentOffset(cachedState.scrollOffset, animated: true)
+            scrollView.setContentOffset(cachedState.scrollOffset, animated: false)
             UIView.animate(withDuration: 0.5) {
                 cachedState.snapshot.alpha = 0
             } completion: { _ in
