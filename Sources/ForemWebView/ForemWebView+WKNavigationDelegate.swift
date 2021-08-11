@@ -9,7 +9,7 @@ extension ForemWebView: WKNavigationDelegate {
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if let snapshotPreview = snapshotPreview {
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.5) {
                 snapshotPreview.alpha = 0
             } completion: { _ in
                 snapshotPreview.removeFromSuperview()
