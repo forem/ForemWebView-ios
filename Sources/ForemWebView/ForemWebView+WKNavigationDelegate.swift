@@ -8,12 +8,13 @@ extension ForemWebView: WKNavigationDelegate {
     }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        if let snapshotPreview = snapshotPreview {
+        if let cachedState = self.cachedState {
+            scrollView.setContentOffset(cachedState.scrollOffset, animated: true)
             UIView.animate(withDuration: 0.5) {
-                snapshotPreview.alpha = 0
+                cachedState.snapshot.alpha = 0
             } completion: { _ in
-                snapshotPreview.removeFromSuperview()
-                self.snapshotPreview = nil
+                cachedState.snapshot.removeFromSuperview()
+                self.cachedState = nil
             }
         }
         

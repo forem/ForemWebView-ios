@@ -9,7 +9,12 @@ extension ForemWebView {
             return nil
         }
         
-        return ForemWebViewCachedState(customURL: customURL, snapshot: snapshot)
+        var scrollPoint = convert(CGPoint(x: 0, y: 0), to: scrollView)
+        scrollPoint = CGPoint(x: scrollPoint.x, y: scrollView.contentSize.height - frame.size.height)
+
+        return ForemWebViewCachedState(customURL: customURL,
+                                       snapshot: snapshot,
+                                       scrollOffset: scrollPoint)
     }
 }
 

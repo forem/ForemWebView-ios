@@ -26,7 +26,7 @@ public enum ForemWebViewTheme {
 open class ForemWebView: WKWebView {
 
     var videoPlayerLayer: AVPlayerLayer?
-    var snapshotPreview: UIView?
+    var cachedState: ForemWebViewCachedState?
 
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
@@ -96,9 +96,9 @@ open class ForemWebView: WKWebView {
             load(request)
         }
         
-        snapshotPreview = cachedState.snapshot
-        addSubview(snapshotPreview!)
-        snapshotPreview?.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
+        self.cachedState = cachedState
+        addSubview(cachedState.snapshot)
+        cachedState.snapshot.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
     }
 
     // Returns `true` if the url provided is considered of the supported 3rd party redirect URLs
