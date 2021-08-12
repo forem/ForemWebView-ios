@@ -8,6 +8,16 @@ extension ForemWebView: WKNavigationDelegate {
     }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if let cachedState = self.cachedState {
+            scrollView.setContentOffset(cachedState.scrollOffset, animated: false)
+            UIView.animate(withDuration: 0.5) {
+                cachedState.snapshot.alpha = 0
+            } completion: { [unowned self] _ in
+                cachedState.snapshot.removeFromSuperview()
+                self.cachedState = nil
+            }
+        }
+        
         //Remove scroll if /connect view
         webView.scrollView.isScrollEnabled = !(webView.url?.path.hasPrefix("/connect") ?? false)
         ensureForemInstance()
@@ -15,8 +25,12 @@ extension ForemWebView: WKNavigationDelegate {
         
         // Create one timer that will make sure we periodically fetch the user data from the body element
         guard userDataTimer == nil else { return }
-        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            self.updateUserData()
+        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+            if let self = self {
+                self.updateUserData()
+            } else {
+                timer.invalidate()
+            }
         }
     }
 

@@ -26,6 +26,7 @@ public enum ForemWebViewTheme {
 open class ForemWebView: WKWebView {
 
     var videoPlayerLayer: AVPlayerLayer?
+    var cachedState: ForemWebViewCachedState?
 
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
@@ -63,12 +64,13 @@ open class ForemWebView: WKWebView {
     }
 
     func setupWebView() {
-        configuration.userContentController.add(self, name: "haptic")
-        configuration.userContentController.add(self, name: "body")
-        configuration.userContentController.add(self, name: "podcast")
-        configuration.userContentController.add(self, name: "imageUpload")
+        let messageHandler = ForemScriptMessageHandler(delegate: self)
+        configuration.userContentController.add(messageHandler, name: "haptic")
+        configuration.userContentController.add(messageHandler, name: "body")
+        configuration.userContentController.add(messageHandler, name: "podcast")
+        configuration.userContentController.add(messageHandler, name: "imageUpload")
         if AVPictureInPictureController.isPictureInPictureSupported() {
-            configuration.userContentController.add(self, name: "video")
+            configuration.userContentController.add(messageHandler, name: "video")
         }
         allowsBackForwardNavigationGestures = true
         navigationDelegate = self
@@ -84,6 +86,20 @@ open class ForemWebView: WKWebView {
             let request = URLRequest(url: url)
             load(request)
         }
+    }
+    
+    // Helper function that performs a load on the webView. It's the recommended interface to use
+    // if a cached state has been stored. It will display the cached snapshot until the webview has
+    // had time to load the custom URL of the cached state.
+    open func load(_ cachedState: ForemWebViewCachedState) {
+        if let url = URL(string: cachedState.customURL) {
+            let request = URLRequest(url: url)
+            load(request)
+        }
+        
+        self.cachedState = cachedState
+        addSubview(cachedState.snapshot)
+        cachedState.snapshot.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height)
     }
 
     // Returns `true` if the url provided is considered of the supported 3rd party redirect URLs
