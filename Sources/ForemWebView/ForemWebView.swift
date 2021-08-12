@@ -64,12 +64,13 @@ open class ForemWebView: WKWebView {
     }
 
     func setupWebView() {
-        configuration.userContentController.add(self, name: "haptic")
-        configuration.userContentController.add(self, name: "body")
-        configuration.userContentController.add(self, name: "podcast")
-        configuration.userContentController.add(self, name: "imageUpload")
+        let messageHandler = ForemScriptMessageHandler(delegate: self)
+        configuration.userContentController.add(messageHandler, name: "haptic")
+        configuration.userContentController.add(messageHandler, name: "body")
+        configuration.userContentController.add(messageHandler, name: "podcast")
+        configuration.userContentController.add(messageHandler, name: "imageUpload")
         if AVPictureInPictureController.isPictureInPictureSupported() {
-            configuration.userContentController.add(self, name: "video")
+            configuration.userContentController.add(messageHandler, name: "video")
         }
         allowsBackForwardNavigationGestures = true
         navigationDelegate = self
