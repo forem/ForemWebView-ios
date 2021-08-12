@@ -12,7 +12,7 @@ extension ForemWebView: WKNavigationDelegate {
             scrollView.setContentOffset(cachedState.scrollOffset, animated: false)
             UIView.animate(withDuration: 0.5) {
                 cachedState.snapshot.alpha = 0
-            } completion: { _ in
+            } completion: { [unowned self] _ in
                 cachedState.snapshot.removeFromSuperview()
                 self.cachedState = nil
             }
@@ -25,7 +25,7 @@ extension ForemWebView: WKNavigationDelegate {
         
         // Create one timer that will make sure we periodically fetch the user data from the body element
         guard userDataTimer == nil else { return }
-        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [unowned self] timer in
             self.updateUserData()
         }
     }
