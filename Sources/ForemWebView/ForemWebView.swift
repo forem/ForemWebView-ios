@@ -76,6 +76,14 @@ open class ForemWebView: WKWebView {
         uiDelegate = self
     }
 
+    open func clearReferences() {
+        configuration.userContentController.removeAllUserScripts()
+        configuration.userContentController.removeAllScriptMessageHandlers()
+        configuration.userContentController.removeAllContentRuleLists()
+        navigationDelegate = nil
+        uiDelegate = nil
+    }
+
     // MARK: - Interface functions (open)
 
     // Helper function that performs a load on the webView. It's the recommended interface to use
