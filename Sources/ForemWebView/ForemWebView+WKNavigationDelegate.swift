@@ -12,9 +12,9 @@ extension ForemWebView: WKNavigationDelegate {
             scrollView.setContentOffset(cachedState.scrollOffset, animated: false)
             UIView.animate(withDuration: 0.5) {
                 cachedState.snapshot.alpha = 0
-            } completion: { [unowned self] _ in
+            } completion: { [weak self] _ in
                 cachedState.snapshot.removeFromSuperview()
-                self.cachedState = nil
+                self?.cachedState = nil
             }
         }
         
