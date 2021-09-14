@@ -63,6 +63,7 @@ open class ForemWebView: WKWebView {
 
         let preferences = WKPreferences()
         preferences.javaScriptCanOpenWindowsAutomatically = true
+        preferences.javaScriptEnabled = true
         configuration.preferences = preferences
 
         return configuration
