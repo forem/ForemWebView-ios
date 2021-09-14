@@ -60,6 +60,11 @@ open class ForemWebView: WKWebView {
 
         configuration.allowsInlineMediaPlayback = true
         configuration.mediaTypesRequiringUserActionForPlayback = []
+
+        let preferences = WKPreferences()
+        preferences.javaScriptCanOpenWindowsAutomatically = true
+        configuration.preferences = preferences
+
         return configuration
     }
 
