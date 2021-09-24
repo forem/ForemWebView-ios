@@ -47,7 +47,7 @@ extension ForemWebView: WKNavigationDelegate {
         // target="_blank" normal navigation won't work and in order for the webview to follow
         // these links (specially within an iframe) requires us to capture the navigation and
         // `.cancel` it, then manually loading the URL.
-        if policy == .allow && navigationAction.targetFrame != nil {
+        if policy == .allow && navigationAction.targetFrame == nil {
             decisionHandler(.cancel)
             load(url.absoluteString)
         } else {
