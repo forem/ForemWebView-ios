@@ -42,8 +42,11 @@ extension ForemWebView: WKNavigationDelegate {
             decisionHandler(.allow)
             return
         }
-        if navigationAction.targetFrame == nil {
-            print("TARGET BLANK")
+        guard navigationAction.targetFrame == nil else {
+            print("TARGET BLANK: \(url.absoluteString)")
+            decisionHandler(.cancel)
+            load(url.absoluteString)
+            return
         }
         let policy = navigationPolicy(url: url, navigationType: navigationAction.navigationType)
         decisionHandler(policy)
