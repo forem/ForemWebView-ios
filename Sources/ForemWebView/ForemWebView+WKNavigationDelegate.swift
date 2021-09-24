@@ -42,7 +42,7 @@ extension ForemWebView: WKNavigationDelegate {
             decisionHandler(.allow)
             return
         }
-        guard navigationAction.targetFrame == nil else {
+        guard navigationAction.targetFrame != nil else {
             print("TARGET BLANK: \(url.absoluteString)")
             decisionHandler(.cancel)
             load(url.absoluteString)
