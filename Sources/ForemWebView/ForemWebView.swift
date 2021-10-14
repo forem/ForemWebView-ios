@@ -105,19 +105,32 @@ open class ForemWebView: WKWebView {
     // Returns `true` if the url provided is considered of the supported 3rd party redirect URLs
     // in a OAuth protocol. Returns `false` otherwise.
     open func isOAuthUrl(_ url: URL) -> Bool {
-        // Takes into account GitHub OAuth paths including 2FA + error pages
-        let gitHubAuth = url.absoluteString.hasPrefix("https://github.com/login") ||
-                         url.absoluteString.hasPrefix("https://github.com/session")
+        // GitHub OAuth paths including 2FA + error pages
+        if url.absoluteString.hasPrefix("https://github.com/login") ||
+            url.absoluteString.hasPrefix("https://github.com/session") {
+            return true
+        }
 
-        // Takes into account Twitter OAuth paths including error pages
-        let twitterAuth = url.absoluteString.hasPrefix("https://api.twitter.com/oauth") ||
-                          url.absoluteString.hasPrefix("https://twitter.com/login/error")
+        // Twitter OAuth paths including error pages
+        if url.absoluteString.hasPrefix("https://api.twitter.com/oauth") ||
+            url.absoluteString.hasPrefix("https://twitter.com/login/error") {
+            return true
+        }
 
-        // Regex that into account Facebook OAuth based on their API versions
+        // Regex for Facebook OAuth based on their API versions
         // Example: "https://www.facebook.com/v4.0/dialog/oauth"
         let fbRegex =  #"https://(www|m)?\.facebook\.com/(v\d+.\d+/dialog/oauth|login.php)"#
+        if url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil {
+            return true
+        }
 
-        return gitHubAuth || twitterAuth || url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil
+        // Forem Passport Auth
+        if url.absoluteString.hasPrefix("https://passport.forem.com/oauth") {
+            return true
+        }
+
+        // Didn't match any supported OAuth URL
+        return false
     }
 
     // Async callback will return the `ForemUserData` struct, which encapsulates some information
