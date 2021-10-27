@@ -28,7 +28,7 @@ let package = Package(
                 .product(name: "AlamofireImage", package: "AlamofireImage", condition: .when(platforms: [.iOS])),
                 .product(name: "YPImagePicker", package: "YPImagePicker", condition: .when(platforms: [.iOS])),
             ],
-            resources: [.process("JS+CSS")]),
+            resources: []),
         .testTarget(name: "ForemWebViewTests", dependencies: ["ForemWebView"], resources: [.process("Assets")])
     ]
 )
