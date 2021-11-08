@@ -140,7 +140,7 @@ open class ForemWebView: WKWebView {
     // Async callback will return the `ForemUserData` struct, which encapsulates some information
     // regarding the currently logged in user. It will return `nil` if this data isn't available
     open func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
-        let javascript = "window.ForemMobile.getUserData()"
+        let javascript = "window.ForemMobile?.getUserData()"
 
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard let jsonString = result as? String else {
