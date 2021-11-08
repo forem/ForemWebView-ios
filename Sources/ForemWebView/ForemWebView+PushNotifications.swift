@@ -5,7 +5,7 @@ import UIKit
 extension ForemWebView {
     open func registerDevice(token: String) {
         guard !userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
-        let javascript = "window.ForemMobile.registerDeviceToken('\(token)', '\(appBundle)', 'iOS')"
+        let javascript = "window.ForemMobile?.registerDeviceToken('\(token)', '\(appBundle)', 'iOS')"
 
         evaluateJavaScript(javascript) { result, error in
             if let error = error {
@@ -18,7 +18,7 @@ extension ForemWebView {
     
     open func unregisterDevice(token: String, userId: Int) {
         guard userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
-        let javascript = "window.ForemMobile.unregisterDeviceToken('\(userId)', '\(token)', '\(appBundle)', 'iOS')"
+        let javascript = "window.ForemMobile?.unregisterDeviceToken('\(userId)', '\(token)', '\(appBundle)', 'iOS')"
 
         evaluateJavaScript(javascript) { result, error in
             if let error = error {

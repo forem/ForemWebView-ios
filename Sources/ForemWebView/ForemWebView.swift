@@ -209,7 +209,7 @@ open class ForemWebView: WKWebView {
     func ensureForemInstance() {
         guard foremInstance == nil else { return }
 
-        let javascript = "window.ForemMobile.getInstanceMetadata()"
+        let javascript = "window.ForemMobile?.getInstanceMetadata()"
 
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard let jsonString = result as? String else {
