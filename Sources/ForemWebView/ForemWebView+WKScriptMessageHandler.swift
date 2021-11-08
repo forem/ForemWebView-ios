@@ -5,8 +5,9 @@ import WebKit
 import AlamofireImage
 import YPImagePicker
 
-enum BridgeMessageType {
-    case podcast, video
+enum BridgeMessageType: String {
+    case podcast = "podcast"
+    case video = "video"
 }
 
 extension ForemWebView: WKScriptMessageHandler {
@@ -27,7 +28,11 @@ extension ForemWebView: WKScriptMessageHandler {
     }
 
     // Helper function that will send Bridge messages into the DOM
-    internal func sendBridgeMessage(type: BridgeMessageType, message: [String: String]) {
+    internal func sendBridgeMessage(_ message: [String: String], type: BridgeMessageType) {
+        // Add the namespace to the payload
+        var payload = message
+        payload["namespace"] = type.rawValue
+
         var jsonString = ""
         let encoder = JSONEncoder()
         if let jsonData = try? encoder.encode(message) {
@@ -35,6 +40,8 @@ extension ForemWebView: WKScriptMessageHandler {
         }
 
         let javascript = "window.ForemMobile?.injectJSMessage('\(jsonString)')"
+
+        guard !javascript.isEmpty else { return }
         evaluateJavaScript(wrappedJS(javascript)) { _, error in
             if let error = error {
                 print("Error sending Podcast message (\(message)): \(error.localizedDescription)")

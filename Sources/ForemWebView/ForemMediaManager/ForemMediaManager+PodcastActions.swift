@@ -60,7 +60,7 @@ extension ForemMediaManager {
 
     internal func updateTimeLabel(currentTime: Double, duration: Double) {
         guard currentTime > 0 && duration > 0 else {
-            webView?.sendBridgeMessage(type: .podcast, message: ["action": "init"])
+            webView?.sendBridgeMessage(["action": "init"], type: .podcast)
             return
         }
 
@@ -69,7 +69,7 @@ extension ForemMediaManager {
             "duration": String(format: "%.4f", duration),
             "currentTime": String(format: "%.4f", currentTime)
         ]
-        webView?.sendBridgeMessage(type: .podcast, message: message)
+        webView?.sendBridgeMessage(message, type: .podcast)
     }
 
     internal func load(audioUrl: String?) {
@@ -108,7 +108,7 @@ extension ForemMediaManager {
                 "action": "tick",
                 "currentTime": String(format: "%.4f", time)
             ]
-            self?.webView?.sendBridgeMessage(type: .video, message: message)
+            self?.webView?.sendBridgeMessage(message,type: .podcast)
         }
     }
 }
