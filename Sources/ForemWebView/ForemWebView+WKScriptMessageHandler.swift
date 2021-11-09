@@ -47,7 +47,7 @@ extension ForemWebView: WKScriptMessageHandler {
 
         var jsonString = ""
         let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(message) {
+        if let jsonData = try? encoder.encode(payload) {
             jsonString = String(data: jsonData, encoding: .utf8) ?? ""
         }
 
