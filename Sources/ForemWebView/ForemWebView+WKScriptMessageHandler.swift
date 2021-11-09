@@ -27,6 +27,8 @@ extension ForemWebView: WKScriptMessageHandler {
         case "haptic":
             guard let hapticType = message.body as? String else { return }
             handleHapticMessage(type: hapticType)
+        case "userSession":
+            print("TESTING: \(message.body)")
         default: ()
         }
     }

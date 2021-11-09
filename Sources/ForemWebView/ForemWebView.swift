@@ -99,6 +99,7 @@ open class ForemWebView: WKWebView {
         configuration.userContentController.add(messageHandler, name: "podcast")
         configuration.userContentController.add(messageHandler, name: "imageUpload")
         configuration.userContentController.add(messageHandler, name: "coverUpload")
+        configuration.userContentController.add(messageHandler, name: "userSession")
         if AVPictureInPictureController.isPictureInPictureSupported() {
             configuration.userContentController.add(messageHandler, name: "video")
         }
