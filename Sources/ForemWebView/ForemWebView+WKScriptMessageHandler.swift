@@ -44,8 +44,6 @@ extension ForemWebView: WKScriptMessageHandler {
         }
 
         let javascript = "window.ForemMobile?.injectJSMessage('\(jsonString)')"
-
-        guard !javascript.isEmpty else { return }
         evaluateJavaScript(wrappedJS(javascript)) { _, error in
             if let error = error {
                 print("Error sending Podcast message (\(message)): \(error.localizedDescription)")
