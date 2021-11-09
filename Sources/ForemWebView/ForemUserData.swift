@@ -10,9 +10,14 @@ import Foundation
     public var userID: Int
     public var configBodyClass: String
 
-    public init(message: [String: String]) {
-        userID = Int(message["id"] ?? "0") ?? 0
-        configBodyClass = message["config_body_class"] ?? ""
+    public init(message: [String: Any]) {
+        if let userIDStr = message["id"] as? String, let bodyClass = message["config_body_class"] as? String {
+            userID = Int(userIDStr) ?? 0
+            configBodyClass = bodyClass
+        } else {
+            userID = 0
+            configBodyClass = ""
+        }
     }
 
     // Returns the UX theme in the logged-in user's settings

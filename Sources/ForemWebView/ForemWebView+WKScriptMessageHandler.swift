@@ -30,7 +30,7 @@ extension ForemWebView: WKScriptMessageHandler {
         case "userLogout":
             self.foremWebViewDelegate?.didLogout(userData: self.userData)
         case "userLogin":
-            if let messageData = message.body as? [String: String] {
+            if let messageData = message.body as? [String: Any] {
                 let foremUser = ForemUserData(message: messageData)
                 self.userData = foremUser
                 self.foremWebViewDelegate?.didLogin(userData: foremUser)
