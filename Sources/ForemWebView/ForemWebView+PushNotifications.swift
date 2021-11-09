@@ -7,7 +7,7 @@ extension ForemWebView {
         guard !userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
         let javascript = "window.ForemMobile?.registerDeviceToken('\(token)', '\(appBundle)', 'iOS')"
 
-        evaluateJavaScript(javascript) { result, error in
+        evaluateJavaScript(wrappedJS(javascript)) { result, error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
@@ -20,7 +20,7 @@ extension ForemWebView {
         guard userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
         let javascript = "window.ForemMobile?.unregisterDeviceToken('\(userId)', '\(token)', '\(appBundle)', 'iOS')"
 
-        evaluateJavaScript(javascript) { result, error in
+        evaluateJavaScript(wrappedJS(javascript)) { result, error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
