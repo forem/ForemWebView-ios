@@ -11,8 +11,8 @@ import Foundation
     public var configBodyClass: String
 
     public init(message: [String: Any]) {
-        if let userIDStr = message["id"] as? Int, let bodyClass = message["config_body_class"] as? String {
-            userID = Int(userIDStr) ?? 0
+        if let messageId = message["id"] as? Int, let bodyClass = message["config_body_class"] as? String {
+            userID = messageId
             configBodyClass = bodyClass
         } else {
             userID = 0
