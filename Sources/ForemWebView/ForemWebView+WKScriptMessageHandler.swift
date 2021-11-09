@@ -28,9 +28,13 @@ extension ForemWebView: WKScriptMessageHandler {
             guard let hapticType = message.body as? String else { return }
             handleHapticMessage(type: hapticType)
         case "userLogout":
-            print("LOGOUT: \(message.body)")
+            self.foremWebViewDelegate?.didLogout(userData: self.userData)
         case "userLogin":
-            print("LOGIN: \(message.body)")
+            if let messageData = message.body as? [String: String] {
+                let foremUser = ForemUserData(message: messageData)
+                self.userData = foremUser
+                self.foremWebViewDelegate?.didLogin(userData: foremUser)
+            }
         default: ()
         }
     }
@@ -110,7 +114,7 @@ extension ForemWebView: WKScriptMessageHandler {
 
     // Function that will upload a UIImage directly to the Forem instance
     func uploadImage(_ image: UIImage, type: BridgeMessageType) {
-        guard let token = csrfToken, let domain = self.foremInstance?.domain else {
+        guard let domain = self.foremInstance?.domain else {
             let message = ["action": "error", "message": "Unexpected error"]
             self.sendBridgeMessage(message, type: type)
             return
@@ -121,16 +125,21 @@ extension ForemWebView: WKScriptMessageHandler {
         let targetUrl = "\(requestProtocol)\(domain)/image_uploads"
 
         let optimizedImage = image.af.imageScaled(to: image.foremLimitedSize())
-        optimizedImage.uploadTo(url: targetUrl, token: token) { (link, error) in
-            if let link = link as String? {
-                var message = ["action": "success", "link": link]
-                if !link.contains(requestProtocol) {
-                    message["link"] = "\(requestProtocol)\(domain)\(link)"
+
+        // Get fresh CSRF token for image upload request
+        self.fetchCSRF { token in
+            guard let token = token else { return }
+            optimizedImage.uploadTo(url: targetUrl, token: token) { (link, error) in
+                if let link = link as String? {
+                    var message = ["action": "success", "link": link]
+                    if !link.contains(requestProtocol) {
+                        message["link"] = "\(requestProtocol)\(domain)\(link)"
+                    }
+                    self.sendBridgeMessage(message, type: type)
+                } else {
+                    let message = ["action": "error", "error": error ?? "Unexpected error"]
+                    self.sendBridgeMessage(message, type: type)
                 }
-                self.sendBridgeMessage(message, type: type)
-            } else {
-                let message = ["action": "error", "error": error ?? "Unexpected error"]
-                self.sendBridgeMessage(message, type: type)
             }
         }
     }

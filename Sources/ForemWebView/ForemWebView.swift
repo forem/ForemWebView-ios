@@ -12,7 +12,7 @@ public protocol ForemWebViewDelegate: AnyObject {
     func didFinishNavigation()
     func didFailNavigation()
     func didLogin(userData: ForemUserData)
-    func didLogout(userData: ForemUserData)
+    func didLogout(userData: ForemUserData?)
 }
 
 public enum ForemWebViewError: Error {
@@ -30,11 +30,9 @@ open class ForemWebView: WKWebView {
 
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
-    open var csrfToken: String?
     open var userDeviceTokenConfirmed = false
 
     @objc open dynamic var userData: ForemUserData?
-    var userDataTimer: Timer?
 
     lazy var mediaManager: ForemMediaManager = {
         return ForemMediaManager(webView: self)
@@ -171,37 +169,6 @@ open class ForemWebView: WKWebView {
                 completion(nil)
             } else {
                 completion(result as? String ?? nil)
-            }
-        }
-    }
-
-    // Function that will update the observable userData variable by reusing `fetchUserData`
-    func updateUserData() {
-        self.fetchUserData { (userData) in
-
-            // Whenever changes in the DOM trigger a `updateUserData` call is when we `fetchUserData`.
-            // Then we update `self.userData` only if something has changed. This allows the consumers
-            // of the framework to observe `self.userData` and expect changes when something has changed
-            if self.userData != userData {
-
-                // If changes occurred we want to update the CSRF token as well
-                self.fetchCSRF { (token) in
-                    self.csrfToken = token
-
-                    if let userData = userData {
-                        // Notify the delegate of newly logged in user and save it to `self.userData`
-                        if userData.userID != self.userData?.userID {
-                            self.foremWebViewDelegate?.didLogin(userData: userData)
-                        }
-                        self.userData = userData
-                    } else {
-                        // Notify the delegate of the recently logged out user and clear `self.userData`
-                        if let prevUserData = self.userData {
-                            self.foremWebViewDelegate?.didLogout(userData: prevUserData)
-                        }
-                        self.userData = nil
-                    }
-                }
             }
         }
     }
