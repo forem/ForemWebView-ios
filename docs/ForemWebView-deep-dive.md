@@ -14,7 +14,6 @@ It's important to know this is a custom implementation of `WKWebView` and you **
 1. Observe changes in the view's **variables**:
    - `userData` will be updated when a user logs in/out (`ForemUserData` or `nil` if unauthenticated)
    - `estimatedProgress`, `canGoBack`, `canGoForward`, `url`, and any other WKWebView variable for state updates
-   - `csrfToken` is automatically populated
 
 ## Available helper functions/variables
 

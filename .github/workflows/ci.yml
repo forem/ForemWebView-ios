@@ -6,7 +6,7 @@ jobs:
     runs-on: macOS-latest
     strategy:
         matrix:
-          destination: ['platform=iOS Simulator,OS=14.1,name=iPhone 12 Pro Max']
+          destination: ['platform=iOS Simulator,OS=15.0,name=iPhone 13 Pro Max']
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -14,5 +14,5 @@ jobs:
         run: |
           set -o pipefail && xcodebuild -scheme ForemWebView -sdk iphonesimulator -destination "${destination}" test | xcpretty
         env:
-         DEVELOPER_DIR: /Applications/Xcode_12.1.app/Contents/Developer
+         DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
          destination: ${{ matrix.destination }}

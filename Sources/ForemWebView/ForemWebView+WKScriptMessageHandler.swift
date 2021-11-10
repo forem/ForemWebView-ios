@@ -5,8 +5,11 @@ import WebKit
 import AlamofireImage
 import YPImagePicker
 
-enum BridgeMessageType {
-    case podcast, video
+enum BridgeMessageType: String {
+    case podcast = "podcast"
+    case video = "video"
+    case imageUpload = "imageUpload"
+    case coverImageUpload = "coverUpload"
 }
 
 extension ForemWebView: WKScriptMessageHandler {
@@ -18,35 +21,40 @@ extension ForemWebView: WKScriptMessageHandler {
         case "video":
             mediaManager.handleVideoMessage(message.body as? [String: String] ?? [:])
         case "imageUpload":
-            handleImagePicker(message.body as? [String: String] ?? [:])
+            handleImagePicker(message.body as? [String: String] ?? [:], type: .imageUpload)
+        case "coverUpload":
+            handleImagePicker(message.body as? [String: String] ?? [:], type: .coverImageUpload)
         case "haptic":
             guard let hapticType = message.body as? String else { return }
             handleHapticMessage(type: hapticType)
+        case "userLogout":
+            self.foremWebViewDelegate?.didLogout(userData: self.userData)
+        case "userLogin":
+            if let messageData = message.body as? [String: Any] {
+                let foremUser = ForemUserData(message: messageData)
+                self.userData = foremUser
+                self.foremWebViewDelegate?.didLogin(userData: foremUser)
+            }
         default: ()
         }
     }
 
     // Helper function that will send Bridge messages into the DOM
-    internal func sendBridgeMessage(type: BridgeMessageType, message: [String: String]) {
+    internal func sendBridgeMessage(_ message: [String: String], type: BridgeMessageType) {
+        // Add the namespace to the payload
+        var payload = message
+        payload["namespace"] = type.rawValue
+
         var jsonString = ""
         let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(message) {
+        if let jsonData = try? encoder.encode(payload) {
             jsonString = String(data: jsonData, encoding: .utf8) ?? ""
         }
 
-        var javascript = ""
-        // Supported messages
-        switch type {
-        case .podcast:
-            javascript = "document.getElementById('audiocontent').setAttribute('data-podcast', '\(jsonString)')"
-        case .video:
-            javascript = "document.getElementById('video-player-source').setAttribute('data-message', '\(jsonString)')"
-        }
-
-        guard !javascript.isEmpty else { return }
+        let javascript = "window.ForemMobile?.injectJSMessage('\(jsonString)')"
         evaluateJavaScript(wrappedJS(javascript)) { _, error in
             if let error = error {
-                print("Error sending Podcast message (\(message)): \(error.localizedDescription)")
+                print("Error sending '\(type.rawValue)' message (\(message)): \(error.localizedDescription)")
             }
         }
     }
@@ -85,17 +93,15 @@ extension ForemWebView: WKScriptMessageHandler {
     }
 
     // Whenever a request to select an image is triggered via WKScriptMessageHandler
-    func handleImagePicker(_ message: [String: String]) {
-        guard let targetElementId = message["id"] else { return }
-
+    func handleImagePicker(_ message: [String: String], type: BridgeMessageType) {
         let picker = imagePicker(message["ratio"])
         picker.didFinishPicking { [unowned picker] items, _ in
             // Callback for when the native image picker process is completed by the user
             if let photo = items.singlePhoto {
                 // Image selected now start uploading process
                 let message = ["action": "uploading"]
-                self.injectImageMessage(message, targetElementId: targetElementId)
-                self.uploadImage(elementId: targetElementId, image: photo.image)
+                self.sendBridgeMessage(message, type: type)
+                self.uploadImage(photo.image, type: type)
             }
             picker.dismiss(animated: true, completion: nil)
         }
@@ -106,38 +112,11 @@ extension ForemWebView: WKScriptMessageHandler {
         }
     }
 
-    // This function will inject a message back into the image selector that triggered the request
-    func injectImageMessage(_ message: [String: String], targetElementId: String) {
-        var jsonString = ""
-        let encoder = JSONEncoder()
-        if let jsonData = try? encoder.encode(message) {
-            jsonString = String(data: jsonData, encoding: .utf8) ?? ""
-        }
-
-        // React doesn't trigger `onChange` when updating the value of inputs
-        // programmatically, so we are forced to dispatch the event manually
-        let javascript = """
-                         {
-                            let element = document.getElementById('\(targetElementId)');
-                            element.value = `\(jsonString)`;
-                            let changeEvent = new Event('input', { bubbles: true });
-                            element.dispatchEvent(changeEvent);
-                         }
-                         """
-        
-        evaluateJavaScript(wrappedJS(javascript)) { _, error in
-            guard error == nil else {
-                print(error.debugDescription)
-                return
-            }
-        }
-    }
-
     // Function that will upload a UIImage directly to the Forem instance
-    func uploadImage(elementId: String, image: UIImage) {
-        guard let token = csrfToken, let domain = self.foremInstance?.domain else {
+    func uploadImage(_ image: UIImage, type: BridgeMessageType) {
+        guard let domain = self.foremInstance?.domain else {
             let message = ["action": "error", "message": "Unexpected error"]
-            self.injectImageMessage(message, targetElementId: elementId)
+            self.sendBridgeMessage(message, type: type)
             return
         }
 
@@ -146,16 +125,21 @@ extension ForemWebView: WKScriptMessageHandler {
         let targetUrl = "\(requestProtocol)\(domain)/image_uploads"
 
         let optimizedImage = image.af.imageScaled(to: image.foremLimitedSize())
-        optimizedImage.uploadTo(url: targetUrl, token: token) { (link, error) in
-            if let link = link as String? {
-                var message = ["action": "success", "link": link]
-                if !link.contains(requestProtocol) {
-                    message["link"] = "\(requestProtocol)\(domain)\(link)"
+
+        // Get fresh CSRF token for image upload request
+        self.fetchCSRF { token in
+            guard let token = token else { return }
+            optimizedImage.uploadTo(url: targetUrl, token: token) { (link, error) in
+                if let link = link as String? {
+                    var message = ["action": "success", "link": link]
+                    if !link.contains(requestProtocol) {
+                        message["link"] = "\(requestProtocol)\(domain)\(link)"
+                    }
+                    self.sendBridgeMessage(message, type: type)
+                } else {
+                    let message = ["action": "error", "error": error ?? "Unexpected error"]
+                    self.sendBridgeMessage(message, type: type)
                 }
-                self.injectImageMessage(message, targetElementId: elementId)
-            } else {
-                let message = ["action": "error", "error": error ?? "Unexpected error"]
-                self.injectImageMessage(message, targetElementId: elementId)
             }
         }
     }

@@ -12,7 +12,7 @@ public protocol ForemWebViewDelegate: AnyObject {
     func didFinishNavigation()
     func didFailNavigation()
     func didLogin(userData: ForemUserData)
-    func didLogout(userData: ForemUserData)
+    func didLogout(userData: ForemUserData?)
 }
 
 public enum ForemWebViewError: Error {
@@ -30,11 +30,9 @@ open class ForemWebView: WKWebView {
 
     open weak var foremWebViewDelegate: ForemWebViewDelegate?
     open var foremInstance: ForemInstanceMetadata?
-    open var csrfToken: String?
     open var userDeviceTokenConfirmed = false
 
     @objc open dynamic var userData: ForemUserData?
-    var userDataTimer: Timer?
 
     lazy var mediaManager: ForemMediaManager = {
         return ForemMediaManager(webView: self)
@@ -63,12 +61,44 @@ open class ForemWebView: WKWebView {
         return configuration
     }
 
+    class func isOAuthUrl(_ url: URL) -> Bool {
+        // GitHub OAuth paths including 2FA + error pages
+        if url.absoluteString.hasPrefix("https://github.com/login") ||
+            url.absoluteString.hasPrefix("https://github.com/session") {
+            return true
+        }
+
+        // Twitter OAuth paths including error pages
+        if url.absoluteString.hasPrefix("https://api.twitter.com/oauth") ||
+            url.absoluteString.hasPrefix("https://twitter.com/login/error") {
+            return true
+        }
+
+        // Regex for Facebook OAuth based on their API versions
+        // Example: "https://www.facebook.com/v4.0/dialog/oauth"
+        let fbRegex =  #"https://(www|m)?\.facebook\.com/(v\d+.\d+/dialog/oauth|login.php)"#
+        if url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil {
+            return true
+        }
+
+        // Forem Passport Auth
+        if url.absoluteString.hasPrefix("https://passport.forem.com/oauth") {
+            return true
+        }
+
+        // Didn't match any supported OAuth URL
+        return false
+    }
+
     func setupWebView() {
         let messageHandler = ForemScriptMessageHandler(delegate: self)
         configuration.userContentController.add(messageHandler, name: "haptic")
         configuration.userContentController.add(messageHandler, name: "body")
         configuration.userContentController.add(messageHandler, name: "podcast")
         configuration.userContentController.add(messageHandler, name: "imageUpload")
+        configuration.userContentController.add(messageHandler, name: "coverUpload")
+        configuration.userContentController.add(messageHandler, name: "userLogin")
+        configuration.userContentController.add(messageHandler, name: "userLogout")
         if AVPictureInPictureController.isPictureInPictureSupported() {
             configuration.userContentController.add(messageHandler, name: "video")
         }
@@ -105,44 +135,14 @@ open class ForemWebView: WKWebView {
     // Returns `true` if the url provided is considered of the supported 3rd party redirect URLs
     // in a OAuth protocol. Returns `false` otherwise.
     open func isOAuthUrl(_ url: URL) -> Bool {
-        // GitHub OAuth paths including 2FA + error pages
-        if url.absoluteString.hasPrefix("https://github.com/login") ||
-            url.absoluteString.hasPrefix("https://github.com/session") {
-            return true
-        }
-
-        // Twitter OAuth paths including error pages
-        if url.absoluteString.hasPrefix("https://api.twitter.com/oauth") ||
-            url.absoluteString.hasPrefix("https://twitter.com/login/error") {
-            return true
-        }
-
-        // Regex for Facebook OAuth based on their API versions
-        // Example: "https://www.facebook.com/v4.0/dialog/oauth"
-        let fbRegex =  #"https://(www|m)?\.facebook\.com/(v\d+.\d+/dialog/oauth|login.php)"#
-        if url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil {
-            return true
-        }
-
-        // Forem Passport Auth
-        if url.absoluteString.hasPrefix("https://passport.forem.com/oauth") {
-            return true
-        }
-
-        // Didn't match any supported OAuth URL
-        return false
+        return ForemWebView.isOAuthUrl(url)
     }
 
     // Async callback will return the `ForemUserData` struct, which encapsulates some information
     // regarding the currently logged in user. It will return `nil` if this data isn't available
     open func fetchUserData(completion: @escaping (ForemUserData?) -> Void) {
-        var javascript = ""
-        if let fileURL = Bundle.module.url(forResource: "fetchUserData", withExtension: "js"),
-           let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
-            javascript = fileContents
-        }
+        let javascript = "window.ForemMobile?.getUserData()"
 
-        guard !javascript.isEmpty else { return }
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard let jsonString = result as? String else {
                 completion(nil)
@@ -173,50 +173,14 @@ open class ForemWebView: WKWebView {
         }
     }
 
-    // Function that will update the observable userData variable by reusing `fetchUserData`
-    func updateUserData() {
-        self.fetchUserData { (userData) in
-
-            // Whenever changes in the DOM trigger a `updateUserData` call is when we `fetchUserData`.
-            // Then we update `self.userData` only if something has changed. This allows the consumers
-            // of the framework to observe `self.userData` and expect changes when something has changed
-            if self.userData != userData {
-
-                // If changes occurred we want to update the CSRF token as well
-                self.fetchCSRF { (token) in
-                    self.csrfToken = token
-
-                    if let userData = userData {
-                        // Notify the delegate of newly logged in user and save it to `self.userData`
-                        if userData.userID != self.userData?.userID {
-                            self.foremWebViewDelegate?.didLogin(userData: userData)
-                        }
-                        self.userData = userData
-                    } else {
-                        // Notify the delegate of the recently logged out user and clear `self.userData`
-                        if let prevUserData = self.userData {
-                            self.foremWebViewDelegate?.didLogout(userData: prevUserData)
-                        }
-                        self.userData = nil
-                    }
-                }
-            }
-        }
-    }
-
     // Function that will ensure the ForemWebView is initialized using a valid Forem Instance. It will
     // update `foremInstance` variable which will help provide metadata about the initialized ForemWebView.
     // It will also call `failIfInvalidInstanceError` if unable to populate the metadata on the first load.
     func ensureForemInstance() {
         guard foremInstance == nil else { return }
 
-        var javascript = ""
-        if let fileURL = Bundle.module.url(forResource: "fetchForemInstanceMetadata", withExtension: "js"),
-           let fileContents = try? String(contentsOf: fileURL.absoluteURL) {
-            javascript = fileContents
-        }
+        let javascript = "window.ForemMobile?.getInstanceMetadata()"
 
-        guard !javascript.isEmpty else { return }
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             guard let jsonString = result as? String else {
                 print("Unable to fetch Forem Instance Metadata: \(String(describing: error))")

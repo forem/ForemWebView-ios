@@ -10,6 +10,16 @@ import Foundation
     public var userID: Int
     public var configBodyClass: String
 
+    public init(message: [String: Any]) {
+        if let messageId = message["id"] as? Int, let bodyClass = message["config_body_class"] as? String {
+            userID = messageId
+            configBodyClass = bodyClass
+        } else {
+            userID = 0
+            configBodyClass = ""
+        }
+    }
+
     // Returns the UX theme in the logged-in user's settings
     public func theme() -> ForemWebViewTheme {
         var themeName = ""

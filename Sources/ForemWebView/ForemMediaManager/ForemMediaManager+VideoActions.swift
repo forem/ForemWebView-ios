@@ -44,9 +44,9 @@ extension ForemMediaManager {
             avPlayerControllerReference?.entersFullScreenWhenPlaybackBegins = true
             videoPauseObserver = avPlayer?.observe(\.rate, options: .new) { (player, _) in
                 if player.rate == 0 {
-                    self.webView?.sendBridgeMessage(type: .video, message: [ "action": "pause" ])
+                    self.webView?.sendBridgeMessage([ "action": "pause" ], type: .video)
                 } else {
-                    self.webView?.sendBridgeMessage(type: .video, message: [ "action": "play" ])
+                    self.webView?.sendBridgeMessage([ "action": "play" ], type: .video)
                 }
             }
 

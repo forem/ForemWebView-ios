@@ -22,16 +22,6 @@ extension ForemWebView: WKNavigationDelegate {
         webView.scrollView.isScrollEnabled = !(webView.url?.path.hasPrefix("/connect") ?? false)
         ensureForemInstance()
         foremWebViewDelegate?.didFinishNavigation()
-        
-        // Create one timer that will make sure we periodically fetch the user data from the body element
-        guard userDataTimer == nil else { return }
-        userDataTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
-            if let self = self {
-                self.updateUserData()
-            } else {
-                timer.invalidate()
-            }
-        }
     }
 
     public func webView(_ webView: WKWebView,

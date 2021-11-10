@@ -16,22 +16,12 @@ final class ForemWebViewTests: XCTestCase {
         let fileURL = Bundle.module.url(forResource: "logged-in-forem.dev", withExtension: "html")!
         return try! String(contentsOf: fileURL.absoluteURL)
     }()
-    let loggedInHTMLPink: String = {
-        let fileURL = Bundle.module.url(forResource: "pink-logged-in-forem.dev", withExtension: "html")!
-        return try! String(contentsOf: fileURL.absoluteURL)
-    }()
-    let loggedInHTMLDark: String = {
-        let fileURL = Bundle.module.url(forResource: "dark-logged-in-forem.dev", withExtension: "html")!
-        return try! String(contentsOf: fileURL.absoluteURL)
-    }()
     
     static var allTests = [
         ("testCustomUserAgent", testCustomUserAgent),
         ("testAuthURLs", testAuthURLs),
         ("testUserDataIsNilWhenLoggedOut", testUserDataIsNilWhenLoggedOut),
         ("testExtractsUserDataWithDefaultTheme", testExtractsUserDataWithDefaultTheme),
-        ("testExtractsUserDataWithPinkTheme", testExtractsUserDataWithPinkTheme),
-        ("testExtractsUserDataWithNightTheme", testExtractsUserDataWithNightTheme),
     ]
     
     func testCustomUserAgent() {
@@ -109,38 +99,6 @@ final class ForemWebViewTests: XCTestCase {
         DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
             webView.fetchUserData { (userData) in
                 XCTAssertTrue(userData?.theme() == .base)
-                promise.fulfill()
-            }
-        }
-
-        wait(for: [promise], timeout: timeout)
-    }
-
-    func testExtractsUserDataWithPinkTheme() {
-        let webView = ForemWebView()
-        webView.loadHTMLString(loggedInHTMLPink, baseURL: nil)
-
-        let promise = expectation(description: "UserData with pink-theme")
-        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
-            webView.fetchUserData { (userData) in
-                XCTAssertTrue(userData?.theme() == .pink)
-                promise.fulfill()
-            }
-        }
-
-        wait(for: [promise], timeout: timeout)
-    }
-
-    func testExtractsUserDataWithNightTheme() {
-        let webView = ForemWebView()
-        webView.loadHTMLString(loggedInHTMLDark, baseURL: nil)
-
-        let promise = expectation(description: "UserData with night-theme")
-        // On top of the expectation it turns out we need to give the webView some time to load/process the HTML string
-        DispatchQueue.main.asyncAfter(deadline: .now() + asyncAfter) {
-            webView.fetchUserData { (userData) in
-                XCTAssertTrue(userData?.theme() == .night)
                 promise.fulfill()
             }
         }
