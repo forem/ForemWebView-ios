@@ -16,9 +16,9 @@ extension ForemWebView {
         }
     }
     
-    open func unregisterDevice(token: String, userId: Int) {
+    open func unregisterDevice(token: String, userID: Int) {
         guard userDeviceTokenConfirmed, let appBundle = Bundle.main.bundleIdentifier else { return }
-        let javascript = "window.ForemMobile?.unregisterDeviceToken('\(userId)', '\(token)', '\(appBundle)', 'iOS')"
+        let javascript = "window.ForemMobile?.unregisterDeviceToken('\(userID)', '\(token)', '\(appBundle)', 'iOS')"
 
         evaluateJavaScript(wrappedJS(javascript)) { result, error in
             if let error = error {
