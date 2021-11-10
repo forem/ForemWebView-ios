@@ -14,5 +14,5 @@ jobs:
         run: |
           set -o pipefail && xcodebuild -scheme ForemWebView -sdk iphonesimulator -destination "${destination}" test | xcpretty
         env:
-         DEVELOPER_DIR: /Applications/Xcode_12.1.app/Contents/Developer
+         DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
          destination: ${{ matrix.destination }}
