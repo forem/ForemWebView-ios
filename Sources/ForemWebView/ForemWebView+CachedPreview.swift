@@ -17,10 +17,10 @@ extension ForemWebView {
             "/top/infinity",
         ]
         var scrollOffset = scrollView.contentOffset
-        if scrollOffsetExcemptPaths.contains(url?.relativePath) {
+        if scrollOffsetExcemptPaths.contains(url?.relativePath ?? "") {
             // Excempt paths (main feed) should have a scroll offset of 0
             // More about this here: https://github.com/forem/forem-ios/issues/112
-            scrollOffset = 0
+            scrollOffset = CGPoint.zero
         }
 
         return ForemWebViewCachedState(customURL: customURL,
