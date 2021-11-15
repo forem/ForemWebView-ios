@@ -97,6 +97,13 @@ extension ForemWebView: WKScriptMessageHandler {
     // Whenever a request to select an image is triggered via WKScriptMessageHandler
     func handleImagePicker(_ message: [String: String], type: BridgeMessageType) {
         let picker = imagePicker(message["ratio"])
+
+        // Dark NavigationBar temporary fix (iOS 15 + XCode13):
+        // https://github.com/Yummypets/YPImagePicker/issues/690#issuecomment-926587214
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        picker.navigationBar.scrollEdgeAppearance = navBarAppearance
+
         picker.didFinishPicking { [unowned picker] items, _ in
             // Callback for when the native image picker process is completed by the user
             if let photo = items.singlePhoto {
