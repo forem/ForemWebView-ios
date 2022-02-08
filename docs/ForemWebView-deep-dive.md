@@ -19,9 +19,6 @@ It's important to know this is a custom implementation of `WKWebView` and you **
 
 - `load(_ urlString: String)`
    - Helper method for simplicity: `webView.load("https://dev.to")`
-- `isOAuthUrl(_ url: URL) -> Bool`
-   - Responds to whether the url provided is one of the supported 3rd party redirect URLs in a OAuth protocol
-   - Useful if implementing `WKNavigationDelegate` on your own (not recommended)
 - `userData`
    - Instance of `ForemUserData` when authenticated or `nil` otherwise
 - `foremInstance`
@@ -30,6 +27,12 @@ It's important to know this is a custom implementation of `WKWebView` and you **
   - Async callback to request the `ForemUserData` struct from the current state of the DOM
   - Instead of polling with this function we recommend you register to observe the `userData` variable as you'll react to changes when they become available
 - `fetchUserData(completion: @escaping (ForemUserData?) -> Void)`
+
+Extension to `URL`
+
+- `.isOAuthUrl -> Bool`
+   - Responds to whether the url is one of the supported 3rd party redirect URLs in a OAuth protocol
+   - Useful if implementing `WKNavigationDelegate` on your own (not recommended)
 
 ## Native Podcast Player & Picture in Picture video
 

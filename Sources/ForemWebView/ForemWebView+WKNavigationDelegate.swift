@@ -30,22 +30,28 @@ extension ForemWebView: WKNavigationDelegate {
 
     public func webView(_ webView: WKWebView,
                         decidePolicyFor navigationAction: WKNavigationAction,
-                        decisionHandler: @escaping (WKNavigationActionPolicy) -> Swift.Void) {
+                        preferences: WKWebpagePreferences,
+                        decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Swift.Void) {
 
         guard let url = navigationAction.request.url else {
-            decisionHandler(.allow)
+            decisionHandler(.allow, preferences)
             return
         }
         let policy = navigationPolicy(url: url, navigationType: navigationAction.navigationType)
+        
+        //If we're going off to select OAuth providers, pop us into Desktop mode so we pass user agent checks
+        if url.isGoogleAuth || url.isFacebookAuth {
+            preferences.preferredContentMode = .desktop
+        }
         
         // target="_blank" normal navigation won't work and in order for the webview to follow
         // these links (specially within an iframe) requires us to capture the navigation and
         // `.cancel` it, then manually loading the URL.
         if policy == .allow && navigationAction.targetFrame == nil {
-            decisionHandler(.cancel)
+            decisionHandler(.cancel, preferences)
             load(url.absoluteString)
         } else {
-            decisionHandler(policy)
+            decisionHandler(policy, preferences)
         }
     }
     

@@ -17,6 +17,7 @@ let package = Package(
         .package(url: "https://github.com/Yummypets/YPImagePicker", .revision("2cf2d150bb0861f2079bc44b56c17aabf5e5d5aa")),
         .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.4.0"),
         .package(url: "https://github.com/Alamofire/AlamofireImage.git", from: "4.1.0"),
+        .package(url: "https://github.com/vadymmarkov/Fakery", .upToNextMajor(from: "5.0.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -29,6 +30,13 @@ let package = Package(
                 .product(name: "YPImagePicker", package: "YPImagePicker", condition: .when(platforms: [.iOS])),
             ],
             resources: []),
-        .testTarget(name: "ForemWebViewTests", dependencies: ["ForemWebView"], resources: [.process("Assets")])
+        .testTarget(
+            name: "ForemWebViewTests",
+            dependencies: [
+                "ForemWebView",
+                .product(name: "Fakery", package: "Fakery"),
+            ],
+            resources: [.process("Assets")]
+        )
     ]
 )

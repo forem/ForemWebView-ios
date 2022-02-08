@@ -62,32 +62,7 @@ open class ForemWebView: WKWebView {
     }
 
     class func isOAuthUrl(_ url: URL) -> Bool {
-        // GitHub OAuth paths including 2FA + error pages
-        if url.absoluteString.hasPrefix("https://github.com/login") ||
-            url.absoluteString.hasPrefix("https://github.com/session") {
-            return true
-        }
-
-        // Twitter OAuth paths including error pages
-        if url.absoluteString.hasPrefix("https://api.twitter.com/oauth") ||
-            url.absoluteString.hasPrefix("https://twitter.com/login/error") {
-            return true
-        }
-
-        // Regex for Facebook OAuth based on their API versions
-        // Example: "https://www.facebook.com/v4.0/dialog/oauth"
-        let fbRegex =  #"https://(www|m)?\.facebook\.com/(v\d+.\d+/dialog/oauth|login.php)"#
-        if url.absoluteString.range(of: fbRegex, options: .regularExpression) != nil {
-            return true
-        }
-
-        // Forem Passport Auth
-        if url.absoluteString.hasPrefix("https://passport.forem.com/oauth") {
-            return true
-        }
-
-        // Didn't match any supported OAuth URL
-        return false
+        url.isOAuthUrl()
     }
 
     func setupWebView() {
