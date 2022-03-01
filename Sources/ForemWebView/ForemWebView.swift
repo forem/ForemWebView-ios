@@ -138,7 +138,8 @@ open class ForemWebView: WKWebView {
 
     // Function that fetches the CSRF Token required for direct interaction with the Forem servers
     func fetchCSRF(completion: @escaping (String?) -> Void) {
-        evaluateJavaScript(wrappedJS("window.csrfToken")) { result, error in
+        let javascript = "document.querySelector(`meta[name='csrf-token']`)?.value"
+        evaluateJavaScript(wrappedJS(javascript)) { result, error in
             if let error = error {
                 print("Unable to fetch CSRF Token: \(error.localizedDescription)")
                 completion(nil)
