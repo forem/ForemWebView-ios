@@ -8,8 +8,8 @@ public extension URL {
         self.absoluteString.range(of: URL.faceBookRegex, options: .regularExpression) != nil
     }
     
-    // Forem Passport Auth
-    var isForemPassportAuth: Bool { self.absoluteString.hasPrefix("https://passport.forem.com/oauth") }
+    // Forem Account Auth
+    var isForemAccountAuth: Bool { self.absoluteString.hasPrefix("https://account.forem.com/oauth") }
     
     // GitHub OAuth paths including 2FA + error pages
     var isGithubAuth: Bool {
@@ -46,7 +46,7 @@ public extension URL {
             return true
         }
 
-        if isForemPassportAuth {
+        if isForemAccountAuth {
             return true
         }
 

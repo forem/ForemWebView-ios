@@ -65,7 +65,7 @@ final class ForemWebViewTests: XCTestCase {
             "https://m.facebook.com/v4.0/dialog/oauth",
             "https://m.facebook.com/v6.0/dialog/oauth",
             "https://m.facebook.com/login.php?skip_api_login=1&api_key=asdf",
-            "https://passport.forem.com/oauth/authorize?client_id=IBex_ltWo0tiuoB9CgHt7LCrwTuG5rlwhphjzQdf1RA&redirect_uri=https%3A%2F%2Fgggames.visualcosita.com%2Fusers%2Fauth%2Fforem%2Fcallback&response_type=code&state=de3f6b0c4cac41fdb9abf5409ce2f24e2d743245ca37a53a"
+            "https://account.forem.com/oauth/authorize?client_id=IBex_ltWo0tiuoB9CgHt7LCrwTuG5rlwhphjzQdf1RA&redirect_uri=https%3A%2F%2Fgggames.visualcosita.com%2Fusers%2Fauth%2Fforem%2Fcallback&response_type=code&state=de3f6b0c4cac41fdb9abf5409ce2f24e2d743245ca37a53a"
         ]
         for urlString in urlStrings {
             if let url = URL(string: urlString) {
