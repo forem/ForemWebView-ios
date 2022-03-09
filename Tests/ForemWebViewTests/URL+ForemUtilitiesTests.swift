@@ -8,7 +8,7 @@ class URL_ForemUtilitiesTests: XCTestCase {
         ("testIsGoogleAuth", testIsGithubAuth),
         ("testIsGithubAuth", testIsGoogleAuth),
         ("testIsFacebookAuth", testIsFacebookAuth),
-        ("testIsForemPassportAuth", testIsForemPassportAuth),
+        ("testIsForemAccountAuth", testIsForemAccountAuth),
         ("testIsTwitterAuth", testIsTwitterAuth),
     ]
     static let faker = Faker()
@@ -42,8 +42,8 @@ class URL_ForemUtilitiesTests: XCTestCase {
         "https://m.facebook.com/login.php?skip_api_login=1&api_key=asdf",
     ]
     
-    static let passportUrlStrings = [
-        "https://passport.forem.com/oauth/authorize?client_id=IBex_ltWo0tiuoB9CgHt7LCrwTuG5rlwhphjzQdf1RA&redirect_uri=https%3A%2F%2Fgggames.visualcosita.com%2Fusers%2Fauth%2Fforem%2Fcallback&response_type=code&state=de3f6b0c4cac41fdb9abf5409ce2f24e2d743245ca37a53a"
+    static let foremAccountUrlStrings = [
+        "https://account.forem.com/oauth/authorize?client_id=IBex_ltWo0tiuoB9CgHt7LCrwTuG5rlwhphjzQdf1RA&redirect_uri=https%3A%2F%2Fgggames.visualcosita.com%2Fusers%2Fauth%2Fforem%2Fcallback&response_type=code&state=de3f6b0c4cac41fdb9abf5409ce2f24e2d743245ca37a53a"
     ]
     
     static let googleUrlStrings = [
@@ -60,7 +60,7 @@ class URL_ForemUtilitiesTests: XCTestCase {
         """,
     ]
     
-    static let urlStrings = githubUrlStrings + twitterUrlStrings + facebookUrlStrings + passportUrlStrings + googleUrlStrings
+    static let urlStrings = githubUrlStrings + twitterUrlStrings + facebookUrlStrings + foremAccountUrlStrings + googleUrlStrings
     
     func testIsOauthURL() {
         for urlString in URL_ForemUtilitiesTests.urlStrings {
@@ -100,10 +100,10 @@ class URL_ForemUtilitiesTests: XCTestCase {
         }
     }
 
-    func testIsForemPassportAuth() {
-        for urlString in URL_ForemUtilitiesTests.passportUrlStrings {
+    func testIsForemAccountAuth() {
+        for urlString in URL_ForemUtilitiesTests.foremAccountUrlStrings {
             if let url = URL(string: urlString) {
-                XCTAssertTrue(url.isForemPassportAuth, "String didn't match as Auth URL: \(urlString)")
+                XCTAssertTrue(url.isForemAccountAuth, "String didn't match as Auth URL: \(urlString)")
             }
         }
     }
