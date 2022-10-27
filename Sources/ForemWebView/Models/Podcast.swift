@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class Podcast: Codable {
+struct Podcast: Codable {
     let action: PodcastAction
     let url: String?
     let seconds: String?
@@ -16,7 +16,7 @@ public final class Podcast: Codable {
     let volume: Float?
 }
 
-public enum PodcastAction: String, Codable {
+enum PodcastAction: String, Codable {
     case play
     case load
     case seek
