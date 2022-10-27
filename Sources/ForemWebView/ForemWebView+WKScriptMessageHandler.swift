@@ -17,7 +17,10 @@ extension ForemWebView: WKScriptMessageHandler {
                                       didReceive message: WKScriptMessage) {
         switch message.name {
         case "podcast":
-            mediaManager.handlePodcastMessage(message.body as? [String: String] ?? [:])
+            if let podcast: Podcast = MessageParser().parse(json: message.body) {
+                mediaManager.handle(podcast)
+            }
+//            mediaManager.handlePodcastMessage(message.body as? [String: String] ?? [:])
         case "video":
             mediaManager.handleVideoMessage(message.body as? [String: String] ?? [:])
         case "imageUpload":
@@ -37,7 +40,8 @@ extension ForemWebView: WKScriptMessageHandler {
                 foremWebViewDelegate?.didLogin(userData: foremUser)
                 ensureForemInstance()
             }
-        default: ()
+        default:
+            break
         }
     }
 
