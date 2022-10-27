@@ -47,6 +47,33 @@ class ForemMediaManager: NSObject {
         }
     }
 
+    internal func handle(_ podcast: Podcast) {
+        switch podcast.action {
+        case .play:
+            play(audioUrl: podcast.url, at: podcast.seconds)
+        case .load:
+            load(audioUrl: podcast.url)
+        case .seek:
+            seek(to: podcast.seconds)
+        case .rate:
+            podcastRate = podcast.rate ?? 1
+            avPlayer?.rate = podcastRate ?? 1
+        case .muted:
+            avPlayer?.isMuted = podcast.muted ?? false
+        case .pause:
+            avPlayer?.pause()
+        case .terminate:
+            avPlayer?.pause()
+            clearObservers()
+            UIApplication.shared.endReceivingRemoteControlEvents()
+        case .volume:
+            podcastVolume = podcast.volume ?? 1
+            avPlayer?.rate = podcastVolume ?? 1
+        case .metadata:
+            break
+        }
+    }
+
     internal func handlePodcastMessage(_ message: [String: String]) {
         ensureAudioSessionIsActive()
 
