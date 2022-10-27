@@ -26,5 +26,4 @@ enum PodcastAction: String, Codable {
     case terminate
     case volume
     case metadata
-    
 }
